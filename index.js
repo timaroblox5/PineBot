@@ -15,10 +15,14 @@ client.once('ready', () => {
     console.log('Bot is online!');
 
     // Устанавливаем статус активности
-    client.user.setPresence({
-        activities: [{ name: 'By Tima_Games', type: 'WATCHING' }],
-        status: 'online',
-    }).catch(console.error); // Добавляем обработчик ошибок
+    try {
+        client.user.setPresence({
+            activities: [{ name: 'By Tima_Games', type: 'WATCHING' }],
+            status: 'online',
+        });
+    } catch (error) {
+        console.error('Error setting presence:', error);  // Обработка ошибок
+    }
 });
 
 // Логинимся с токеном
