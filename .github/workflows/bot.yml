@@ -22,5 +22,5 @@ jobs:
 
       - name: Run Discord bot
         env:
-          TOKEN: ${{ secrets.TOKEN }}  # Используем правильное имя переменной
+          DISCORD_TOKEN: ${{ secrets.TOKEN }}  # Используем правильное имя переменной
         run: node index.js
