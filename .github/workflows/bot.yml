@@ -15,12 +15,12 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'  # Или выше, если вы используете последние функции
+          node-version: '20'  # Убедитесь, что версия 20 или выше
 
       - name: Install dependencies
         run: npm install
 
       - name: Run Discord bot
         env:
-          TOKEN: ${{ secrets.TOKEN }}
+          TOKEN: ${{ secrets.TOKEN }}  # Используем правильное имя переменной
         run: node index.js
