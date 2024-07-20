@@ -12,15 +12,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'  # Убедитесь, что версия 20 или выше
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run Discord bot
+      - name: Set up Node.js and run bot
+        uses: ./github/actions/setup-node
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Убедитесь, что токен добавлен в секреты
-        run: node index.js
