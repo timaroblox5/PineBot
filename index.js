@@ -1,7 +1,13 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 
-// Создаем клиент с необходимыми интентами
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+// Создаем клиента с необходимыми интентами
+const client = new Client({ 
+    intents: [
+        GatewayIntentBits.Guilds, 
+        GatewayIntentBits.GuildMessages, 
+        GatewayIntentBits.MessageContent 
+    ] 
+});
 
 const TOKEN = process.env.DISCORD_TOKEN; // Получаем токен из переменной окружения
 
@@ -17,5 +23,3 @@ client.on('messageCreate', message => {
 
 // Логинимся с токеном
 client.login(TOKEN);
-
-//Test
