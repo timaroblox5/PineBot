@@ -2,8 +2,6 @@ const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { QuickDB } = require('quick.db');
 const Logger = require('./structures/Logger'); // Импортируем модуль логирования
 const ConfigUtil = require('./structures/ConfigUtil'); // Импортируем конфигурацию
-
-require('dotenv').config(); // Загружаем переменные окружения
 global.Config = new ConfigUtil(); // Глобальная конфигурация
 global.Log = new Logger(); // Глобальный логгер
 const client = new Client({
