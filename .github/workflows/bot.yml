@@ -23,4 +23,4 @@ jobs:
       - name: Run Discord bot
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Убедитесь, что токен добавлен в секреты
-        run: node index.js
+        run: node index.

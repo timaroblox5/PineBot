@@ -13,12 +13,12 @@ const TOKEN = process.env.DISCORD_TOKEN; // Получаем токен из п�
 
 client.once('ready', () => {
     console.log('Bot is online!');
-});
 
-client.on('messageCreate', message => {
-    if (message.content === '!ping') {
-        message.channel.send('Pong!');
-    }
+    // Устанавливаем статус активности
+    client.user.setPresence({
+        activities: [{ name: 'By Tima_Games', type: 'WATCHING' }],
+        status: 'online',
+    });
 });
 
 // Логинимся с токеном
