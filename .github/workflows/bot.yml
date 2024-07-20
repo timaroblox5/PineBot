@@ -10,9 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        run: git clone https://github.com/timaroblox5/TimaSync-bot.git .
+    
+      - name: Set up Node.js
+        run: |
+          curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
 
-      - name: Set up Node.js and run bot
-        uses: ./github/actions/setup-node
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Discord bot
         env:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Убедитесь, что токен добавлен в секреты
+        run: node index.js
