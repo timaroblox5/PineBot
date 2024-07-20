@@ -13,6 +13,7 @@
     "discord.js": "^14.15.3",
     "fs": "^0.0.1-security",
     "mongoose": "^8.5.1",
+    "path": "^0.12.7",
     "sqlite3": "^5.1.7"
   }
 }
