@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Checkout code
         run: git clone https://github.com/timaroblox5/TimaSync-bot.git .
-    
+
       - name: Set up Node.js
         run: |
           curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
@@ -20,7 +20,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Check dependencies
+        run: npm list
+
       - name: Run Discord bot
         env:
+          MONGODB_URI: mongodb+srv://BFFBOT:${{ secrets.MONGODB_PASSWORD }}@bffbot.hr7tpgj.mongodb.net/?retryWrites=true&w=majority&appName=BFFBOT
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Убедитесь, что токен добавлен в секреты
         run: node index.js
