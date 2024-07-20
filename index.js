@@ -47,9 +47,5 @@ client.on('messageCreate', async (message) => {
         }
     }
 });
-
-
-const DB = process.env.MONGODB_PASSWORD; // Получаем токен из переменной окружения
-client.login(DB);
 const TOKEN = process.env.DISCORD_TOKEN; // Получаем токен из переменной окружения
 client.login(TOKEN);

@@ -25,6 +25,6 @@ jobs:
 
       - name: Run Discord bot
         env:
-          MONGODB_URI: mongodb+srv://BFFBOT:${{ secrets.MONGODB_PASSWORD }}@bffbot.hr7tpgj.mongodb.net/?retryWrites=true&w=majority&appName=BFFBOT
+          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Убедитесь, что токен добавлен в секреты
         run: node index.js
