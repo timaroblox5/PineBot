@@ -1,0 +1,27 @@
+name: Bot
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DISCORD_TOKEN: ${{ secrets.TOKEN }}  # Токен Discord
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # Укажите необходимую версию Node.js
+
+      - name: Install dependencies
+        run: npm install  # Устанавливаем зависимости, если они есть
+
+      - name: Run Index.js
+        run: node Index.js  # Запускаем ваш скрипт
