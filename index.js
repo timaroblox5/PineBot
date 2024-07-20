@@ -10,13 +10,23 @@ const client = new Client({
     ],
 });
 
-// Убедитесь, что файл данных существует
+// Убедитесь, что файл данных существует и инициализируйте его
 let users = [];
 if (!fs.existsSync(path)) {
     fs.writeFileSync(path, JSON.stringify([])); // Создание пустого массива, если файла нет
+} else {
+    // Чтение и парсинг данных
+    const rawData = fs.readFileSync(path, 'utf8'); // Чтение файла как UTF-8
+    if (rawData) {
+        try {
+            users = JSON.parse(rawData); // Парсинг данных
+        } catch (error) {
+            console.error("Ошибка при парсинге JSON:", error);
+            // Если возникла ошибка, инициализируем массив как пустой
+            users = [];
+        }
+    }
 }
-const rawData = fs.readFileSync(path);
-users = JSON.parse(rawData);
 
 client.once('ready', () => {
     console.log('PunoBot is online!');
