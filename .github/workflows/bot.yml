@@ -1,4 +1,4 @@
-name: Bot
+name: Discord Bot
 
 on:
   push:
@@ -6,22 +6,21 @@ on:
       - main
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-    env:
-      DISCORD_TOKEN: ${{ secrets.TOKEN }}  # Токен Discord
-
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # Укажите необходимую версию Node.js
+          node-version: '16'  # Или выше, если вы используете последние функции
 
       - name: Install dependencies
-        run: npm install  # Устанавливаем зависимости, если они есть
+        run: npm install
 
-      - name: Run index.js
-        run: node index.js  # Запускаем ваш скрипт
+      - name: Run Discord bot
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+        run: node index.js
