@@ -1,0 +1,10 @@
+{
+    "prefix": "!",
+    
+    "embed_color": "#ffc200",
+    
+    "debug": true,
+  
+    "controller_guild": "controller_guild_id",
+    "controller_logs": "controller_logs_id"
+  }
