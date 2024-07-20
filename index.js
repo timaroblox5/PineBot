@@ -1,6 +1,6 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const fs = require('fs');
-const path = './pd-db/users.json'; // Убедитесь, что путь правильный
+const path = './users.json'; // Убедитесь, что путь правильный
 
 const client = new Client({
     intents: [
