@@ -18,7 +18,7 @@ client.once('ready', () => {
     client.user.setPresence({
         activities: [{ name: 'By Tima_Games', type: 'WATCHING' }],
         status: 'online',
-    });
+    }).catch(console.error); // Добавляем обработчик ошибок
 });
 
 // Логинимся с токеном
