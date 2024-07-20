@@ -17,3 +17,5 @@ client.on('messageCreate', message => {
 
 // Логинимся с токеном
 client.login(TOKEN);
+
+//Test
