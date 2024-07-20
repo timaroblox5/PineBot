@@ -1,5 +1,4 @@
 const { Client, GatewayIntentBits } = require('discord.js');
-const mongoose = require('mongoose');
 const User = require('./pd-db/userModel'); // Импортируйте модель пользователя
 
 const client = new Client({
@@ -9,29 +8,22 @@ const client = new Client({
         GatewayIntentBits.MessageContent,
     ],
 });
-
-// Подключение к MongoDB
-const mongoURI = 'mongodb+srv://BFFBOT:LLq-7NW-adG-e44@bffbot.hr7tpgj.mongodb.net/?retryWrites=true&w=majority&appName=BFFBOT'; // Замените на ваш URI MongoDB
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB подключен'))
-    .catch(err => console.log('Ошибка подключения к MongoDB:', err));
-
 // Команды бота
 client.once('ready', () => {
     console.log('PunoBot is online!');
 });
 
 client.on('messageCreate', async (message) => {
-    if (message.author.bot) return; // Игнорируем сообщения от ботов
+    if (message.author.bot) return;
 
     const args = message.content.trim().split(' ');
 
     // Команда для добавления пользователя
     if (args[0] === '!adduser' && args[1]) {
-        const newUser = new User({ id: Date.now(), name: args[1] }); // ID можно генерировать, используя временные метки
+        const newUser = new User({ id: Date.now(), name: args[1] });
 
         try {
-            await newUser.save(); // Сохранение нового пользователя в базе данных
+            await newUser.save();
             message.channel.send(`Пользователь ${args[1]} добавлен!`);
         } catch (error) {
             console.error('Ошибка при сохранении пользователя:', error);
