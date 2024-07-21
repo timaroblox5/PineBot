@@ -12,18 +12,20 @@ module.exports = {
         try {
             if (!message || !message.author || message.author.bot) return;
 
-            // Проверяем команды
-            const args = message.content.trim().split(/ +/);
-            const commandName = args.shift().toLowerCase();
-            const command = client.commands.get(commandName);
+            // Проверяем, является ли сообщение командой
+            if (message.content.startsWith(config.PREFIX)) {
+                // Это команда, поэтому обрабатываем её
+                const args = message.content.slice(config.PREFIX.length).trim().split(/ +/);
+                const commandName = args.shift().toLowerCase();
 
-            // Если команда существует, обрабатываем её
-            if (command) {
-                await command.execute(message, args, client);
-                return; // Возвращаемся, чтобы не добавлять XP
+                const command = client.commands.get(commandName);
+                if (command) {
+                    await command.execute(message, args, client);
+                }
+                return; // Возвращаемся, чтобы не добавлять XP за команду
             }
 
-            // Если это не команда, добавляем XP
+            // Добавляем XP для обычных сообщений
             const xpToAdd = Math.floor(Math.random() * 5) + 1;
             const xpData = await Levels.appendXp(message.author.id, message.guild.id, xpToAdd);
 
