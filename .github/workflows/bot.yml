@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '1  * * * *'  # Каждую минуту
+    - cron: '*/1 * * * *'  # Каждую минуту
 
 jobs:
   deploy:
