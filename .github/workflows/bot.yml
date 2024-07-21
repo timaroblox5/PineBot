@@ -26,14 +26,6 @@ jobs:
       - name: Check dependencies
         run: npm list
 
-      - name: Stop previous bot instance
-        run: |
-          if [ -f "bot.pid" ]; then
-            echo "Stopping previous instance with PID $(cat bot.pid)..."
-            kill $(cat bot.pid) || echo "No process to kill"
-            rm bot.pid
-          fi
-
       - name: Run Discord bot
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
