@@ -6,6 +6,7 @@ on:
       - main
   schedule:
     - cron: '*/1 * * * *'  # Каждую минуту
+  workflow_dispatch:  # Позволяет запускать вручную
 
 jobs:
   deploy:
@@ -39,3 +40,12 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Убедитесь, что токен добавлен в секреты
         run: |
           nohup node app.js & echo $! > bot.pid  # Запускаем бот и сохраняем PID
+
+      - name: Check bot status
+        run: |
+          if ps -p $(cat bot.pid) > /dev/null; then
+            echo "Bot is running"
+          else
+            echo "Bot has stopped, triggering re-run"
+            exit 1  # Если бот не работает, завершаем с ошибкой
+          fi
