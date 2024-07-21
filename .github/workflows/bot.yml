@@ -40,10 +40,17 @@ jobs:
         run: |
           nohup node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
 
-      - name: Wait for changes
+      - name: Wait for changes or status
         run: |
           while true; do 
             sleep 300  # Проверяем каждые 5 минут
+            if [ -f "status.txt" ]; then
+              STATUS=$(cat status.txt)
+              if [ "$STATUS" = "остановлен" ]; then
+                echo "Bot is stopped as per status file."
+                exit 0
+              fi
+            fi
             if git fetch && git diff --quiet origin/main; then
               echo "No changes detected."
             else
