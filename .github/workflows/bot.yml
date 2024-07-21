@@ -38,8 +38,20 @@ jobs:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: |
-          node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
+          nohup node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
 
-      - name: Wait indefinitely
+      - name: Wait for changes
         run: |
-          while true; do sleep 1; done  # Задерживаем выполнение действия вечно
+          while true; do 
+            sleep 300  # Проверяем каждые 5 минут
+            if git fetch && git diff --quiet origin/main; then
+              echo "No changes detected."
+            else
+              echo "Changes detected, restarting bot..."
+              if [ -f "bot.pid" ]; then
+                kill $(cat bot.pid) || echo "No process to kill"
+                rm bot.pid
+              fi
+              nohup node app.js & echo $! > bot.pid  # Запускаем бот снова
+            fi
+          done
