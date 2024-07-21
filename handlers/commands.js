@@ -4,7 +4,7 @@ const   { lstat, readdir } = require('fs/promises'),
 
 module.exports.init = async (client) => {
     Log.send(`[HANDLER/EVENTS] Хандлер Slash-комманд запущен.`);
-    const slashes = await walk(client, './commands/').catch(console.error);
+    const slashes = await walk(client, '../commands/').catch(console.error);
     client.application.commands.set(slashes)
         .then(() => {
             Log.send(`[HANDLER/COMMANDS] Установлено ${slashes.length} глобальных slash-комманд.`);

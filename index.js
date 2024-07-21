@@ -47,7 +47,7 @@ const loadHandlers = (client) => {
     }
 };
 
-const loadStructures = (client) => {
+const loadstructures = (client) => {
     const structureFiles = fs.readdirSync(path.join(__dirname, 'structures')).filter(file => file.endsWith('.js'));
 
     for (const file of structureFiles) {
@@ -60,7 +60,7 @@ const loadStructures = (client) => {
 // Загружаем обработчики и структуры
 loadEvents(client);
 loadHandlers(client);
-loadStructures(client);
+loadstructures(client);
 
 const TOKEN = process.env.DISCORD_TOKEN; // Получаем токен из переменной окружения
 client.login(TOKEN);
