@@ -3,7 +3,7 @@ const { lstat, readdir } = require('fs/promises'),
 
 module.exports.init = async (client) => {
     Log.send(`[HANDLER/EVENTS] Хандлер событий запущен.`);
-    walk(client, './events/');
+    walk(client, '../events/');
 }
 
 async function walk(client, dir) {
