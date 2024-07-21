@@ -1,5 +1,7 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
+const commands = require('./handlers/commands.js');
+const events = require('./handlers/events.js');
 const path = require('path');
 const Config = require('./config.json');
 const client = new Client({
