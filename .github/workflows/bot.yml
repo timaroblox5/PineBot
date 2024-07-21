@@ -1,30 +1,29 @@
-name: Discord Bot
+name: Run PinoBot
 
 on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '*/5 * * * *'  # Каждые 5 минут
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
-        run: git clone https://github.com/timaroblox5/TimaSync-bot.git .
+        uses: actions/checkout@v2
 
       - name: Set up Node.js
-        run: |
-          curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'  # Убедитесь, что эта версия совместима с вашим проектом
 
       - name: Install dependencies
         run: npm install
 
-      - name: Check dependencies
-        run: npm list
-
-      - name: Run Discord bot
-        env:
-          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Убедитесь, что токен добавлен в секреты
+      - name: Run PinoBot
         run: node index.js
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Добавьте токен в Secrets
