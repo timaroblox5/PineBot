@@ -1,16 +1,18 @@
 name: Discord Bot
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     - cron: '*/5 * * * *'  # Каждые 5 минут
-  workflow_dispatch:  # Позволяет запускать вручную
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  # Используем встроенное действие
 
       - name: Set up Node.js
         run: |
@@ -20,23 +22,24 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check bot status and run if necessary
-        env:
-          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Убедитесь, что токен добавлен в секреты
+      - name: Check dependencies
+        run: npm list
+
+      - name: Stop previous bot instance
         run: |
-          if ps -p $(pgrep -f "node app.js") > /dev/null; then
-            echo "Bot is already running."
-          else
-            echo "Starting the bot..."
-            nohup node app.js & echo $! > bot.pid  # Запускаем бот и сохраняем PID
+          if [ -f "bot.pid" ]; then
+            echo "Stopping previous instance with PID $(cat bot.pid)..."
+            kill $(cat bot.pid) || echo "No process to kill"
+            rm bot.pid
           fi
 
-      - name: Final check of bot status
+      - name: Run Discord bot
+        env:
+          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: |
-          if ps -p $(cat bot.pid) > /dev/null; then
-            echo "Bot is running"
-          else
-            echo "Bot has stopped, please check the logs"
-            exit 1  # Если бот не работает, завершаем с ошибкой
-          fi
+          node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
+
+      - name: Wait indefinitely
+        run: |
+          while true; do sleep 1; done  # Задерживаем выполнение действия вечно
