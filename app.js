@@ -6,26 +6,32 @@ const path = require('path');
 const mongoose = require('./src/database/mongoose');
 const config = require('./config.json');
 const Levels = require('discord-xp');
-const User = require('./src/models/User'); // Adjust the path as per your project structure
-const { Modal, TextInputComponent, showModal } = require('discord-modals'); // Импортируем нужные компоненты из discord-modals
-
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-
-// Инициализация discord-modals
+const User = require('./src/models/User');
+const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const discordModals = require('discord-modals');
+
+// Создаем клиента
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 discordModals(client);
 
 client.commands = new Collection();
 
-// Load commands
+// Загрузка команд
 const commandFiles = fs.readdirSync(path.join(__dirname, 'src/commands')).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
     const command = require(`./src/commands/${file}`);
+    
+    // Проверка на структуру команды
+    if (!command.data || !command.data.name) {
+        console.error(`Команда в файле ${file} не имеет правильной структуры.`);
+        continue; // Пропустить этот файл
+    }
+
     client.commands.set(command.data.name, command);
 }
 
-// Load interaction events
+// Загрузка событий
 const eventFiles = fs.readdirSync(path.join(__dirname, 'src/events')).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
