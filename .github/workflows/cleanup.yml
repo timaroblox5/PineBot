@@ -1,0 +1,20 @@
+name: Cleanup
+
+on:
+  workflow_run:
+    workflows: ["Discord Bot CI"]  # Укажите имя вашего основного workflow
+    types:
+      - completed
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cleanup action
+        run: |
+          echo "Cleaning up unnecessary files or resources..."
+          # Ваши команды для удаления или очистки

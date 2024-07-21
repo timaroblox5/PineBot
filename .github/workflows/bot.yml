@@ -1,4 +1,4 @@
-name: Discord Bot
+name: Discord Bot CI
 
 on:
   push:
@@ -8,12 +8,41 @@ on:
     - cron: '*/5 * * * *'  # Каждые 5 минут
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        run: git clone https://github.com/timaroblox5/TimaSync-bot.git .
+        uses: actions/checkout@v2
+        
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run bot
+        run: npm start
+        continue-on-error: true  # Позволяет продолжить выполнение даже если бот не стартовал
+      
+      - name: Check if bot started
+        id: checkbot
+        run: |
+          if [ ${{ job.status }} != 'success' ]; then
+            echo "Bot did not start successfully."
+            exit 1
+          else
+            echo "Bot started successfully."
+          fi
 
+      - name: Notify on failure
+        if: failure()
+        run: echo "Notify team or take action!" # Например, отправить уведомление
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build  # Ждет завершения job build
+    if: ${{ success() }}  # Выполняется только, если job build успешен
+    steps:
+      - name: Checkout code
+        run: git clone https://github.com/timaroblox5/TimaSync-bot.git .
+        
       - name: Set up Node.js
         run: |
           curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
