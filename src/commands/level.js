@@ -35,7 +35,7 @@ module.exports = {
                 .setThumbnail(target.displayAvatarURL({ format: 'png', dynamic: true }))
                 .addField('Level', level.toString(), true)
                 .addField('XP', `${xp} / ${xpNeeded}`, true)
-                .addField('BFF Points', (user.bffPoints || 0).toString(), true) // Display currency with default value
+                .addField('Points', (user.Points || 0).toString(), true) // Display currency with default value
                 .setTimestamp();
 
             message.channel.send({ embeds: [embed] });

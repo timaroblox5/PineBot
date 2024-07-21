@@ -38,7 +38,7 @@ module.exports = {
             const earnedCurrency = Math.floor(Math.random() * 50) + 20; // Random currency between 20 and 70
 
             // Update user's default currency (BFF points) and lastWorked timestamp
-            user.bffPoints += earnedCurrency;
+            user.Points += earnedCurrency;
             user.lastWorked = now;
 
             // Save the user data to the database
@@ -47,7 +47,7 @@ module.exports = {
             // Create and send an embed to notify the user about their earnings
             const embed = new MessageEmbed()
                 .setTitle('Work Command')
-                .setDescription(`You worked and earned ${earnedCurrency} BFF points!`)
+                .setDescription(`You worked and earned ${earnedCurrency} points!`)
                 .setColor('#00FF00') // Green color
                 .setTimestamp();
 

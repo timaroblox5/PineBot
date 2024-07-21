@@ -11,7 +11,7 @@ module.exports = {
       poolSize: 5,
       connectTimeoutMS: 10000,
       family: 4,
-      dbName: 'BFBOT' // Specify your database name here
+      dbName: 'PDBOT' // Specify your database name here
     };
 
     mongoose

@@ -38,7 +38,7 @@ for (const file of eventFiles) {
 }
 
 client.on('ready', async () => {
-    client.user.setActivity("f!help", { type: "WATCHING" });
+    client.user.setActivity("!help", { type: "WATCHING" });
 });
 
 client.on("interactionCreate", async (interaction) => {

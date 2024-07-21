@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     guildId: { type: String, required: true },
     xp: { type: Number, default: 0 },
     level: { type: Number, default: 1 },
-    bffPoints: { type: Number, default: 0 }, // Default currency (BFF points)
+    Points: { type: Number, default: 0 }, // Default currency (BFF points)
 });
 
 module.exports = mongoose.model('User', userSchema);
