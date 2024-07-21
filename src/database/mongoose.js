@@ -28,7 +28,15 @@ module.exports = {
     mongoose.Promise = global.Promise;
 
     mongoose.connection.on("disconnected", () => {
-      console.log("MongoDB disconnected.");
+      console.log("MongoDB disconnected. Attempting to reconnect...");
+      setTimeout(() => {
+        mongoose.connect(
+          `mongodb+srv://BFFBOT:${process.env.MONGODB_PASSWORD}@bffbot.hr7tpgj.mongodb.net/?retryWrites=true&w=majority`,
+          dbOptions
+        ).catch(err => {
+          console.error("Reconnection attempt failed:", err);
+        });
+      }, 5000); // Пауза перед попыткой переподключения
     });
 
     mongoose.connection.on("error", (err) => {
