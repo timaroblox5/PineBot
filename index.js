@@ -1,9 +1,7 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js'); // Добавьте Collection
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const Config = require('./config.json'); // Импортируйте конфигурацию
-const User = require('./pd-db/userModel'); // Импортируйте модель пользователя
-
+const Config = require('./config.json');
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -12,14 +10,8 @@ const client = new Client({
     ],
 });
 
-// Команды бота
-client.once('ready', () => {
-    console.log('PunoBot is online!');
-});
-
 // Загружаем команды
-client.commands = new Collection(); // Используйте импортированную Collection
-
+client.commands = new Collection();
 const commandFiles = fs.readdirSync(path.join(__dirname, 'commands')).filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -27,46 +19,24 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
-const loadEvents = (client) => {
-    const eventFiles = fs.readdirSync(path.join(__dirname, 'events')).filter(file => file.endsWith('.js'));
-
-    for (const file of eventFiles) {
-        const event = require(`./events/${file}`);
-        const eventName = event.name;
-
-        // Убедитесь, что event.execute — это функция
-        if (typeof event.execute === 'function') {
-            client.on(eventName, (...args) => event.execute(client, ...args));
-        } else {
-            console.error(`Event in file ${file} does not export an execute function.`);
-        }
-    }
-};
-
 const loadHandlers = (client) => {
     const handlerFiles = fs.readdirSync(path.join(__dirname, 'handlers')).filter(file => file.endsWith('.js'));
 
     for (const file of handlerFiles) {
         const handler = require(`./handlers/${file}`);
         const handlerName = file.split('.')[0];
-        client.on(handlerName, handler.bind(null, client));
+
+        // Убедитесь, что handler — это функция
+        if (typeof handler === 'function') {
+            client.on(handlerName, handler.bind(null, client));
+        } else {
+            console.error(`Handler in file ${file} is not a function.`);
+        }
     }
 };
 
-const loadstructures = (client) => {
-    const structureFiles = fs.readdirSync(path.join(__dirname, 'structures')).filter(file => file.endsWith('.js'));
-
-    for (const file of structureFiles) {
-        const structure = require(`./structures/${file}`);
-        const structureName = file.split('.')[0];
-        client.on(structureName, structure.bind(null, client));
-    }
-};
-
-// Загружаем обработчики и структуры
-loadEvents(client);
+// Загружаем обработчики
 loadHandlers(client);
-loadstructures(client);
 
-const TOKEN = process.env.DISCORD_TOKEN; // Получаем токен из переменной окружения
+const TOKEN = process.env.DISCORD_TOKEN;
 client.login(TOKEN);
