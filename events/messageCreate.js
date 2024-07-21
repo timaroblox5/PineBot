@@ -7,8 +7,9 @@ module.exports = {
         await Log.init(client);
         message.content = message.content.replace(`<@!${client.user.id}>`, ``).trim();
         const prefix = Config.prefix;
-        if (!message.content.startsWith(prefix) || !message.content.startsWith(Config.prefix)) return;
-        const args = message.content.slice(message.content.startsWith(prefix) ? prefix.length : Config.prefix).trim().split(/ +/g);
+        if (!message.content.startsWith(prefix)) return;
+        
+        const args = message.content.slice(prefix.length).trim().split(/ +/g);
         const command = args.shift();
         const cmd = client.commands.get(command);
 
@@ -17,14 +18,14 @@ module.exports = {
             cmd.exec(client, message)
                 .catch((e) => {
                     // Сообщаем об ошибке
-                    Log.error(`[EVENT/INTERACTIONCREATE] Ошибка выполнения команды ${cmd.name}: ${e}`);
-                    interaction.reply({
+                    Log.error(`[EVENT/MESSAGECREATE] Ошибка выполнения команды ${cmd.name}: ${e}`);
+                    message.reply({
                         embeds: [
                             new EmbedBuilder()                                
                                 .setDescription(`Ошибка выполнения команды ${cmd.name}: ${e}`)
                                 .setColor(Config.embed_color)
                         ],
-                        ephemeral: true
+                        ephemeral: true // Это может быть проблемой, так как ephemeral работает только для интеракций
                     });
                 });
         }

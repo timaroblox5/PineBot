@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js'); // Добавьте Collection
 const fs = require('fs');
 const path = require('path');
+const Config = require('./config.json'); // Импортируйте конфигурацию
 const User = require('./pd-db/userModel'); // Импортируйте модель пользователя
 
 const client = new Client({
@@ -26,14 +27,19 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
-// Загрузка обработчиков и событий
 const loadEvents = (client) => {
     const eventFiles = fs.readdirSync(path.join(__dirname, 'events')).filter(file => file.endsWith('.js'));
 
     for (const file of eventFiles) {
         const event = require(`./events/${file}`);
-        const eventName = file.split('.')[0];
-        client.on(eventName, event.bind(null, client));
+        const eventName = event.name;
+
+        // Убедитесь, что event.execute — это функция
+        if (typeof event.execute === 'function') {
+            client.on(eventName, (...args) => event.execute(client, ...args));
+        } else {
+            console.error(`Event in file ${file} does not export an execute function.`);
+        }
     }
 };
 

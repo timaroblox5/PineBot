@@ -1,5 +1,5 @@
-const { InteractionType, EmbedBuilder } = require("discord.js"),
-      cooldown = new Map();
+const { InteractionType, EmbedBuilder } = require("discord.js");
+const cooldown = new Map();
 
 module.exports = {
     name: 'interactionCreate',
@@ -8,7 +8,7 @@ module.exports = {
         await Log.init(client);
 
         // Кулдаун на команды
-		if (![InteractionType.ApplicationCommandAutocomplete, InteractionType.ModalSubmit].includes(interaction?.type)) {
+        if (![InteractionType.ApplicationCommandAutocomplete, InteractionType.ModalSubmit].includes(interaction?.type)) {
             const _cooldown = cooldown.get(interaction.user.id) ?? 0;
             if (Date.now() - _cooldown < 2000) {
                 return interaction.reply({
@@ -21,56 +21,56 @@ module.exports = {
                 });
             }
             cooldown.set(interaction.user.id, Date.now());
-		}
+        }
 
         // Slash команды и Autocomplete
         if (interaction.isChatInputCommand() || interaction.isContextMenuCommand() || interaction?.type == InteractionType.ApplicationCommandAutocomplete) {
-            // Получаем команду их хандлера по имени
             const cmd = client.commands.get(interaction.commandName);
-            // Проверяем соответствия
             if (cmd) {
-                function _catch(e) {
-                    // Сообщаем об ошибке
-                    Log.error(`[EVENT/INTERACTIONCREATE] Ошибка выполнения команды ${cmd.name}: ${e}`);
-                    interaction.reply({
-                        embeds: [
-                            new EmbedBuilder()                                
-                                .setDescription(`Ошибка выполнения команды ${cmd.name}`)
-                                .setColor(Config.embed_color)
-                        ],
-                        ephemeral: true
-                    });
-                }
-                if (interaction?.type == InteractionType.ApplicationCommandAutocomplete) {
-                    cmd.autocomplete(client, interaction).catch(_catch);
-                } else {
-                    cmd.exec(client, interaction).catch(_catch);
-                }
+                handleCommandExecution(cmd, client, interaction);
             }
         } else {
-			let found = false;
-            for(let cmdkey of client.commands.keys()) {
-                const cmd = client.commands.get(cmdkey);
-				let regexName = false;
-				cmd.componentsNames.forEach((name) => {
-					if (name.includes('...') && interaction.customId.includes(name.replace('...', ''))) regexName = true;
-				});
-				if ((cmd.componentsNames.includes(interaction.customId) || regexName) && 
-                    await cmd.componentListener(client, interaction).catch((e) => {
-						if (!interaction.replied) interaction.reply({
-							embeds: [
-								new EmbedBuilder()
-									.setDescription(`Ошибка компонента ${interaction.customId}`)
-									.setColor(Config.embed_color)
-							],
-							ephemeral: true
-						});
-						Log.error(`[EVENT/INTERACTIONCREATE] Ошибка компонента ${interaction.customId}: ${e}`);
-                    })
-                ) found = true;
-            }
-
-			if (!found && !interaction.replied) interaction.deferUpdate();
+            handleComponentInteraction(client, interaction);
         }
+    }
+};
+
+// Обработчик выполнения команд
+async function handleCommandExecution(cmd, client, interaction) {
+    const _catch = (e) => {
+        Log.error(`[EVENT/INTERACTIONCREATE] Ошибка выполнения команды ${cmd.name}: ${e}`);
+        return interaction.reply({
+            embeds: [
+                new EmbedBuilder()                                
+                    .setDescription(`Ошибка выполнения команды ${cmd.name}`)
+                    .setColor(Config.embed_color)
+            ],
+            ephemeral: true
+        });
+    };
+
+    if (interaction?.type == InteractionType.ApplicationCommandAutocomplete) {
+        cmd.autocomplete(client, interaction).catch(_catch);
+    } else {
+        cmd.exec(client, interaction).catch(_catch);
+    }
+}
+
+// Обработчик взаимодействий с компонентами
+async function handleComponentInteraction(client, interaction) {
+    let found = false;
+    for (let cmdkey of client.commands.keys()) {
+        const cmd = client.commands.get(cmdkey);
+        let regexName = cmd.componentsNames.some(name => name.includes('...') && interaction.customId.includes(name.replace('...', '')));
+
+        if ((cmd.componentsNames.includes(interaction.customId) || regexName) && await cmd.componentListener(client, interaction)
+        ) {
+            found = true;
+            break; // Если нашли, можно выйти из цикла
+        }
+    }
+
+    if (!found && !interaction.replied) {
+        interaction.deferUpdate(); // Отложенный ответ, если ничего не нашлось
     }
 }
