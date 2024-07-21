@@ -1,6 +1,5 @@
 'use strict';
 const   { TextChannel, Client } = require("discord.js")
-const Config = require('..config.json');
 
 class Logger {
 

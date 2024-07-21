@@ -1,8 +1,6 @@
 const   { lstat, readdir } = require('fs/promises');
 const   { join } = require('path');
 const   BaseCommand = require('../structures/BaseCommand');
-const Config = require('..config.json');
-
 module.exports.init = async (client) => {
     Log.send(`[HANDLER/EVENTS] Хандлер Slash-комманд запущен.`);
     const slashes = await walk(client, '../commands/').catch(console.error);

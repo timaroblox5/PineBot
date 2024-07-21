@@ -1,7 +1,5 @@
 const { lstat, readdir } = require('fs/promises');
 const { join } = require('path');
-const Config = require('..config.json');
-
 module.exports.init = async (client) => {
     Log.send(`[HANDLER/EVENTS] Хандлер событий запущен.`);
     walk(client, '../events/');

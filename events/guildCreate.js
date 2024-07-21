@@ -1,5 +1,3 @@
-const Config = require('..config.json');
-
 module.exports = {
     name: 'guildCreate',
     once: false,

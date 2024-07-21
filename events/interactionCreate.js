@@ -1,6 +1,5 @@
 const { InteractionType, EmbedBuilder } = require("discord.js");
 const cooldown = new Map();
-const Config = require('..config.json');
 
 module.exports = {
     name: 'interactionCreate',

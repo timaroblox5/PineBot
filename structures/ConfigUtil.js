@@ -1,5 +1,4 @@
 'use strict';
-const Config = require('..config.json');
 
 class ConfigUtil {
 
