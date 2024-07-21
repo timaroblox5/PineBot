@@ -5,19 +5,19 @@ on:
     branches:
       - main
   schedule:
-    - cron: '*/5 * * * *'  # Проверка каждые 5 минут
+    - cron: '*/5 * * * *'  # Каждые 5 минут
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # Использование встроенного действия для клонирования репозитория
+        run: git clone https://github.com/timaroblox5/TimaSync-bot.git .
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2  # Используйте это действие, чтобы установить Node.js
-        with:
-          node-version: '20'  # Версия Node.js, которую вы хотите использовать
+        run: |
+          curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
 
       - name: Install dependencies
         run: npm install
