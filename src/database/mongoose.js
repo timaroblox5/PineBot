@@ -14,16 +14,15 @@ module.exports = {
       dbName: 'PDBOT' // Specify your database name here
     };
 
-    mongoose
-      .connect(
-        `mongodb+srv://BFFBOT:${process.env.MONGODB_PASSWORD}@bffbot.hr7tpgj.mongodb.net/`,
-        dbOptions
-      )
-      .then(() => console.log("Connected to MongoDB"))
-      .catch((err) => {
-        console.error("Failed to connect to MongoDB:", err);
-        process.exit(1); // Exit with error
-      });
+    mongoose.connect(
+      `mongodb+srv://BFFBOT:${process.env.MONGODB_PASSWORD}@bffbot.hr7tpgj.mongodb.net/?retryWrites=true&w=majority`,
+      dbOptions
+    )
+    .then(() => console.log("Connected to MongoDB: PDBOT"))
+    .catch((err) => {
+      console.error("Failed to connect to MongoDB:", err);
+      process.exit(1); // Exit with error
+    });
 
     mongoose.set("useFindAndModify", false);
     mongoose.Promise = global.Promise;
