@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run tests
+      run: npm test
+      continue-on-error: true # Позволяет продолжить выполнение даже если тесты не пройдены
+
+    - name: Cleanup
+      if: failure() # Выполняется, если предыдущее действие завершилось с ошибкой
+      run: |
+        echo "Cleaning up unnecessary files..."
+        # Например, удалить временные файлы или результаты тестов

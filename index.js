@@ -19,7 +19,7 @@ for (const file of commandFiles) {
     client.commands.set(command.name, command);
 }
 
-const loadHandlers = (client) => {
+const loadhandlers = (client) => {
     const handlerFiles = fs.readdirSync(path.join(__dirname, 'handlers')).filter(file => file.endsWith('.js'));
 
     for (const file of handlerFiles) {
@@ -36,7 +36,7 @@ const loadHandlers = (client) => {
 };
 
 // Загружаем обработчики
-loadHandlers(client);
+loadhandlers(client);
 
 const TOKEN = process.env.DISCORD_TOKEN;
 client.login(TOKEN);

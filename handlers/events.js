@@ -1,5 +1,5 @@
-const { lstat, readdir } = require('fs/promises'),
-      { join } = require('path');
+const { lstat, readdir } = require('fs/promises');
+const { join } = require('path');
 
 module.exports.init = async (client) => {
     Log.send(`[HANDLER/EVENTS] Хандлер событий запущен.`);

@@ -1,6 +1,6 @@
-const   { lstat, readdir } = require('fs/promises'),
-        { join } = require('path'),
-        BaseCommand = require('../structures/BaseCommand');
+const   { lstat, readdir } = require('fs/promises');
+const   { join } = require('path');
+const   BaseCommand = require('../structures/BaseCommand');
 
 module.exports.init = async (client) => {
     Log.send(`[HANDLER/EVENTS] Хандлер Slash-комманд запущен.`);
