@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Config = require('..config.json');
 
 // Используем переменную окружения для пароля
 const mongoURI = `mongodb+srv://BFFBOT:${process.env.MONGODB_PASSWORD}@bffbot.hr7tpgj.mongodb.net/test?retryWrites=true&w=majority&appName=BFFBOT`;

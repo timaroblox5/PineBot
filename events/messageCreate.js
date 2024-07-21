@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const Config = require('..config.json');
 
 module.exports = {
     name: 'messageCreate',

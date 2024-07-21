@@ -1,5 +1,6 @@
 'use strict';
 const { Client, ApplicationCommandType, Message, BaseInteraction, AutocompleteInteraction } = require('discord.js');
+const Config = require('..config.json');
 
 class BaseCommand {
  

@@ -10,15 +10,6 @@ const client = new Client({
     ],
 });
 
-// Загружаем команды
-client.commands = new Collection();
-const commandFiles = fs.readdirSync(path.join(__dirname, 'commands')).filter(file => file.endsWith('.js'));
-
-for (const file of commandFiles) {
-    const command = require(`./commands/${file}`);
-    client.commands.set(command.name, command);
-}
-
 const loadhandlers = (client) => {
     const handlerFiles = fs.readdirSync(path.join(__dirname, 'handlers')).filter(file => file.endsWith('.js'));
 

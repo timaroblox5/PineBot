@@ -1,4 +1,6 @@
 // commands/help.js
+const Config = require('..config.json');
+
 module.exports = {
     name: 'help',
     description: 'Показать список доступных команд',
