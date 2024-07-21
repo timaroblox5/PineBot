@@ -12,6 +12,12 @@ module.exports = {
         try {
             if (!message || !message.author || message.author.bot) return;
 
+            // Проверяем, является ли сообщение командой
+            if (message.content.startsWith(config.PREFIX)) {
+                // Если это команда, просто вернемся, не добавляя XP
+                return;
+            }
+
             // Добавляем XP вне зависимости от команды
             const xpToAdd = Math.floor(Math.random() * 5) + 1;
             const xpData = await Levels.appendXp(message.author.id, message.guild.id, xpToAdd);
@@ -25,9 +31,7 @@ module.exports = {
                 await user.save();
             }
 
-            // Проверяем, является ли сообщение командой
-            if (!message.content.startsWith(config.PREFIX)) return;
-
+            // Обработка команды
             const args = message.content.slice(config.PREFIX.length).trim().split(/ +/);
             const commandName = args.shift().toLowerCase();
 
