@@ -29,4 +29,4 @@ jobs:
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Убедитесь, что токен добавлен в секреты
-        run: node index.js
+        run: node app.js

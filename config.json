@@ -1,8 +1,4 @@
 {
-    "prefix": "!",
-    "embed_color": "#3498db",
-    "CommandType": {
-        "CHAT": "chat",
-        "INTERACTION": "interaction"
-    }
+    "EMBED_COLOR": "#313338",
+    "PREFIX": "f!"
 }
