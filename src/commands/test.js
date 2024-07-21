@@ -2,8 +2,10 @@ const { MessageAttachment } = require('discord.js');
 const { createCanvas } = require('canvas');
 
 module.exports = {
-    name: 'card',
-    description: 'Создает карточку пользователя',
+    data: {
+        name: 'card',
+        description: 'Создает карточку пользователя',
+    },
     async execute(message) {
         // Создаем холст
         const width = 400;
