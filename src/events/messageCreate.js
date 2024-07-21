@@ -12,20 +12,7 @@ module.exports = {
         try {
             if (!message || !message.author || message.author.bot) return;
 
-            // Проверяем, является ли сообщение командой
-            if (message.content.startsWith(config.PREFIX)) {
-                // Это команда, поэтому обрабатываем её
-                const args = message.content.slice(config.PREFIX.length).trim().split(/ +/);
-                const commandName = args.shift().toLowerCase();
-
-                const command = client.commands.get(commandName);
-                if (command) {
-                    await command.execute(message, args, client);
-                }
-                return; // Возвращаемся, чтобы не добавлять XP за команду
-            }
-
-            // Добавляем XP для обычных сообщений
+            // Добавляем XP вне зависимости от команды
             const xpToAdd = Math.floor(Math.random() * 5) + 1;
             const xpData = await Levels.appendXp(message.author.id, message.guild.id, xpToAdd);
 
@@ -36,6 +23,15 @@ module.exports = {
                 }
                 user.level = xpData.level;
                 await user.save();
+            }
+
+            // Обработка команды
+            const args = message.content.slice(config.PREFIX.length).trim().split(/ +/);
+            const commandName = args.shift().toLowerCase();
+
+            const command = client.commands.get(commandName);
+            if (command) {
+                await command.execute(message, args, client);
             }
         } catch (error) {
             console.error('Error processing message event:', error);
