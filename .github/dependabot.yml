@@ -1,0 +1,6 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"        # Например, для Node.js
+    directory: "/"                  # Путь к директории с package.json
+    schedule:
+      interval: "daily"             # Проверка каждый день
