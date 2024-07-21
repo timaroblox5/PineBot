@@ -62,3 +62,15 @@ jobs:
               nohup node app.js & echo $! > bot.pid  # Запускаем бот снова
             fi
           done
+
+  # Добавьте этот джоб для остановки запущенного процесса при перезапуске
+  stop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop previous bot instance
+        run: |
+          if [ -f "bot.pid" ]; then
+            echo "Stopping previous instance with PID $(cat bot.pid)..."
+            kill $(cat bot.pid) || echo "No process to kill"
+            rm bot.pid
+          fi
