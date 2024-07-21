@@ -2,14 +2,15 @@ name: Discord Bot
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # Каждую минуту
+    - cron: '*/5 * * * *'  # Каждые 5 минут
+  workflow_dispatch:  # Позволяет запускать вручную
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        run: git clone https://github.com/timaroblox5/TimaSync-bot.git .
+        uses: actions/checkout@v2
 
       - name: Set up Node.js
         run: |
