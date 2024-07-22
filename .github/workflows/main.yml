@@ -1,4 +1,4 @@
-name: pinebot
+name: Pinebot
 
 on:
   push:
@@ -20,42 +20,17 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install PM2 globally
-        run: npm install -g pm2
-
       - name: Install dependencies
         run: npm install
 
-      - name: Check for changes
-        id: check_changes
-        run: |
-          git diff --quiet HEAD^ HEAD || echo "changed=true" >> $GITHUB_ENV
-
-      - name: Show PM2 logs (for debugging)
-        if: env.changed == 'true'
-        run: |
-          pm2 logs pinebot --raw || echo "No logs found."
-
-      - name: Stop old bot process
-        if: env.changed == 'true'
-        run: |
-          pm2 stop pinebot || echo "No previous instance found."
-
-      - name: Cleanup old processes
-        if: env.changed == 'true'
-        run: |
-          pm2 delete pinebot || echo "No previous instance found."
+      - name: Check installed packages
+        run: npm list
 
       - name: Start Discord bot
-        if: env.changed == 'true'
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
-          pm2 start app.js --name "pinebot" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env
-          pm2 save  # Сохраняем текущее состояние PM2
+          nohup node app.js > output.log 2>&1 &
           echo "Bot is running."
-
-      - name: Final PM2 logs check
-        run: pm2 logs pinebot --raw || echo "No logs found."
