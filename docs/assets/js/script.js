@@ -16,7 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
         loginBtn.classList.add('hidden'); // Скрываем кнопку "Войти"
     }
 
-});
+    // Обработчик события нажатия кнопки "Войти"
+    loginBtn.addEventListener('click', (e) => {
+        e.preventDefault(); // Предотвращаем переход по ссылке
+        // Перенаправляем пользователя на страницу авторизации Discord
+        window.location.href = `https://discord.com/oauth2/authorize?client_id=1263856580970152020&response_type=code&redirect_uri=https%3A%2F%2Ftimaroblox5.github.io%2FPineBot%2Fservers&scope=identify+guilds`;
+    });
 
     // Проверяем наличие кода в URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -43,5 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Скрываем параметр code из URL
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
                 window.history.replaceState({ path: newUrl }, '', newUrl);
+            })
+            .catch(error => {
+                console.error('Ошибка при получении данных пользователя:', error);
             });
     }
+});
