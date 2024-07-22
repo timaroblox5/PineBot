@@ -40,29 +40,14 @@ jobs:
         run: |
           nohup node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
 
-      - name: Monitor and restart bot
+      - name: Trigger bot workflow
         run: |
-          while true; do 
-            sleep 1  # Проверяем каждую секунду
-            if [ -f "status.txt" ]; then
-              STATUS=$(cat status.txt)
-              if [ "$STATUS" = "остановлен" ]; then
-                echo "Bot is stopped as per status file."
-                exit 0
-              fi
-            fi
-            git fetch
-            if ! git diff --quiet origin/main; then
-              echo "Changes detected, restarting bot..."
-              if [ -f "bot.pid" ]; then
-                kill $(cat bot.pid) || echo "No process to kill"
-                rm bot.pid
-              fi
-              nohup node app.js & echo $! > bot.pid  # Запускаем бот снова
-            else
-              echo "No changes detected."
-            fi
-          done
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/timaroblox5/PineBot/actions/workflows/bot.yml/dispatches \
+          -d '{"ref": "main"}'
+          # Замените timaroblox5 и PineBot на соответствующие значения
 
   stop:
     runs-on: ubuntu-latest
