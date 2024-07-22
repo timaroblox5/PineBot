@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Используем актуальную версию
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3  # Установите Node.js через действие setup-node
+        uses: actions/setup-node@v3
         with:
-          node-version: '20'  # Явно указываем версию Node.js
+          node-version: '20'
 
       - name: Install PM2 globally
-        run: npm install -g pm2  # Устанавливаем pm2 глобально
+        run: npm install -g pm2
 
       - name: Install dependencies
         run: npm install
@@ -37,7 +37,7 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
-          pm2 start app.js --name "discord-bot" --watch --ignore-watch="node_modules" || pm2 restart "discord-bot"
+          pm2 start app.js --name "discord-bot" --watch --ignore-watch="node_modules" --no-daemon || pm2 restart "discord-bot"
           pm2 save  # Сохраняем текущее состояние pm2
           echo "Bot is running or restarted."
 
