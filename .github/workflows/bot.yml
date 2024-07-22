@@ -37,11 +37,12 @@ jobs:
         run: |
           nohup node app.js & echo $! > bot.pid
 
-      - name: Wait for changes and restart if needed
+      - name: Monitor for changes
         run: |
-          while true; do 
-            sleep 300  # Проверяем каждые 5 минут
+          while true; do
+            sleep 1  # Проверяем каждые 5 минут
             
+            # Проверка изменений
             if git fetch && ! git diff --quiet origin/main; then
               echo "Changes detected, restarting bot..."
               if [ -f "bot.pid" ]; then
