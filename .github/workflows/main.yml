@@ -12,11 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Обновлено до последней версии
 
       - name: Set up Node.js
         run: |
-          curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+          curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
           sudo apt-get install -y nodejs
           sudo npm install -g pm2  # Устанавливаем pm2 глобально
 
@@ -35,7 +35,6 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
-          # Запускаем или перезапускаем бота с помощью pm2
           pm2 start app.js --name "discord-bot" --watch --ignore-watch="node_modules" || pm2 restart "discord-bot"
           pm2 save  # Сохраняем текущее состояние pm2
           echo "Bot is running or restarted."
