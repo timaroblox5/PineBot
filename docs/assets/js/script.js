@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const profile = document.getElementById('profile');
     const profilePic = document.getElementById('profile-pic');
     const username = document.getElementById('username');
+    const loginBtn = document.getElementById('login-btn');
 
     // Проверяем, есть ли данные пользователя в localStorage
     const user = JSON.parse(localStorage.getItem('user'));
@@ -12,10 +13,23 @@ document.addEventListener('DOMContentLoaded', () => {
         profilePic.alt = user.username;
         username.textContent = user.username;
         profile.classList.remove('hidden');
-        document.getElementById('login-btn').classList.add('hidden');
+        loginBtn.classList.add('hidden'); // Скрываем кнопку "Войти"
     }
 
-    // Если есть код и была завершена авторизация
+    // Обработчик события нажатия кнопки "Войти"
+    loginBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = `https://discord.com/oauth2/authorize?client_id=1263856580970152020&response_type=code&redirect_uri=https%3A%2F%2Ftimaroblox5.github.io%2FPineBot%2Fservers&scope=identify+guilds`;
+        
+        // Открываем окно авторизации
+        const width = 600;
+        const height = 700;
+        const left = (screen.width / 2) - (width / 2);
+        const top = (screen.height / 2) - (height / 2);
+        window.open(url, 'Discord Login', `width=${width},height=${height},top=${top},left=${left}`);
+    });
+
+    // Проверяем наличие кода в URL
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     if (code) {
@@ -35,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 profilePic.alt = userInfo.username;
                 username.textContent = userInfo.username;
                 profile.classList.remove('hidden');
-                document.getElementById('login-btn').classList.add('hidden');
+                loginBtn.classList.add('hidden'); // Скрываем кнопку "Войти"
 
                 // Скрываем параметр code из URL
                 const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
