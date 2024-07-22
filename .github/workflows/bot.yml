@@ -40,10 +40,10 @@ jobs:
         run: |
           nohup node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
 
-      - name: Wait for changes or status
+      - name: Monitor and restart bot
         run: |
           while true; do 
-            sleep 1  # Проверяем каждые 5 минут
+            sleep 1  # Проверяем каждую секунду
             if [ -f "status.txt" ]; then
               STATUS=$(cat status.txt)
               if [ "$STATUS" = "остановлен" ]; then
@@ -51,19 +51,19 @@ jobs:
                 exit 0
               fi
             fi
-            if git fetch && git diff --quiet origin/main; then
-              echo "No changes detected."
-            else
+            git fetch
+            if ! git diff --quiet origin/main; then
               echo "Changes detected, restarting bot..."
               if [ -f "bot.pid" ]; then
                 kill $(cat bot.pid) || echo "No process to kill"
                 rm bot.pid
               fi
               nohup node app.js & echo $! > bot.pid  # Запускаем бот снова
+            else
+              echo "No changes detected."
             fi
           done
 
-  # Добавьте этот джоб для остановки запущенного процесса при перезапуске
   stop:
     runs-on: ubuntu-latest
     steps:
