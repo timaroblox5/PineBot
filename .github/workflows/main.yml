@@ -1,0 +1,53 @@
+name: Pinebot Deployment
+
+on:
+  push:
+    branches:
+      - main  # Событие будет запускаться при каждом коммите в ветку main
+  schedule:
+    - cron: '*/1 * * * *'  # Каждую минуту
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Используем последнюю версию Ubuntu
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3  # Клонируем репозиторий
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3  # Устанавливаем Node.js
+        with:
+          node-version: '20'  # Задаем версию Node.js
+
+      - name: Install dependencies
+        run: npm install  # Устанавливаем зависимости проекта
+
+      - name: Install PM2 globally
+        run: npm install -g pm2  # Устанавливаем PM2 глобально
+
+      - name: Start Discord bot
+        env:
+          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}  # Настраиваем переменные окружения
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        run: |
+          pm2 stop pinebot || echo "No previous instance found."  # ОStopping предыдущий экземпляр бота
+          pm2 delete pinebot || echo "No previous instance found."  # Удаляем предыдущий экземпляр бота
+          pm2 start app.js --name "pinebot" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env  # Запускаем бота
+          pm2 save  # Сохраняем текущее состояние PM2
+
+      - name: Start Web Server
+        run: |
+          pm2 stop webserver || echo "No previous instance found."  # Остановить предыдущий экземпляр веб-сервера
+          pm2 delete webserver || echo "No previous instance found."  # Удаляем предыдущий экземпляр веб-сервера
+          pm2 start server.js --name "webserver" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env  # Запускаем веб-сервер
+          pm2 save  # Сохраняем текущее состояние PM2
+      
+      - name: Build and Deploy to GitHub Pages
+        run: |
+          npm install --save-dev gh-pages  # Устанавливаем gh-pages для деплоя
+          npm run build  # Команда для сборки вашего проекта
+          npx gh-pages -d build  # Деплой на GitHub Pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Токен для доступа к вашему репозиторию
