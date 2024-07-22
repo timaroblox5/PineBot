@@ -22,13 +22,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Check dependencies
-        run: npm list
-
       - name: Stop previous bot instance
         run: |
           if [ -f "bot.pid" ]; then
-            echo "Stopping previous instance with PID $(cat bot.pid)..."
+            echo "Stopping previous instance..."
             kill $(cat bot.pid) || echo "No process to kill"
             rm bot.pid
           fi
@@ -40,32 +37,12 @@ jobs:
         run: |
           nohup node app.js & echo $! > bot.pid
 
-      - name: Wait for changes or status
+      - name: Wait for changes and restart if needed
         run: |
           while true; do 
-            sleep 300
-            if [ -f "status.txt" ]; then
-              STATUS=$(cat status.txt)
-              if [ "$STATUS" = "остановлен" ]; then
-                echo "Bot is stopped as per status file."
-                exit 0
-              fi
-            fi
+            sleep 300  # Проверяем каждые 5 минут
             
-            # Проверка активности системы
-            IDLE_TIME=$(xprintidle)
-            if [ "$IDLE_TIME" -gt 300000 ]; then  # 5 минут без активности
-              echo "No activity detected, restarting bot..."
-              if [ -f "bot.pid" ]; then
-                kill $(cat bot.pid) || echo "No process to kill"
-                rm bot.pid
-              fi
-              nohup node app.js & echo $! > bot.pid
-            fi
-
-            if git fetch && git diff --quiet origin/main; then
-              echo "No changes detected."
-            else
+            if git fetch && ! git diff --quiet origin/main; then
               echo "Changes detected, restarting bot..."
               if [ -f "bot.pid" ]; then
                 kill $(cat bot.pid) || echo "No process to kill"
@@ -81,7 +58,7 @@ jobs:
       - name: Stop previous bot instance
         run: |
           if [ -f "bot.pid" ]; then
-            echo "Stopping previous instance with PID $(cat bot.pid)..."
+            echo "Stopping previous instance..."
             kill $(cat bot.pid) || echo "No process to kill"
             rm bot.pid
           fi
