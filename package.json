@@ -2,7 +2,7 @@
   "name": "pinebot",
   "version": "1.0.0",
   "description": "[![Official Discord Server](https://discordapp.com/api/guilds/1264717953597833236/embed.png)](https://discord.gg/4befchXDdU)",
-  "main": "app.js",
+  "main": "start.bat",
   "directories": {
     "doc": "docs"
   },
