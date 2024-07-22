@@ -22,6 +22,10 @@ jobs:
       run: npm install
 
     - name: Start Bot
-      run: node your-bot-file.js  # Замените на имя вашего файла
+      run: node app.js
       env:
-        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Добавьте ваш токен в secrets
+        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+        CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+        PINEBOT_TOKEN: ${{ secrets.PINEBOT_TOKEN }}
+    
