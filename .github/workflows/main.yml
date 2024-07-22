@@ -1,4 +1,4 @@
-name: Discord Bot
+name: pinebot
 
 on:
   push:
@@ -10,6 +10,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -33,23 +34,28 @@ jobs:
       - name: Show PM2 logs (for debugging)
         if: env.changed == 'true'
         run: |
-          pm2 logs discord-bot --raw || echo "No logs found."
+          pm2 logs pinebot --raw || echo "No logs found."
 
-      - name: Start or restart Discord bot
+      - name: Stop old bot process
+        if: env.changed == 'true'
+        run: |
+          pm2 stop pinebot || echo "No previous instance found."
+
+      - name: Cleanup old processes
+        if: env.changed == 'true'
+        run: |
+          pm2 delete pinebot || echo "No previous instance found."
+
+      - name: Start Discord bot
         if: env.changed == 'true'
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
-          pm2 start app.js --name "discord-bot" --watch --ignore-watch="node_modules" --max-restarts 30 || pm2 restart "discord-bot"
-          pm2 save  # Сохраняем текущее состояние pm2
-          echo "Bot is running or restarted."
-
-      - name: Cleanup old processes
-        if: env.changed == 'true'
-        run: |
-          pm2 delete "discord-bot" || echo "No previous instance found."
+          pm2 start app.js --name "pinebot" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env
+          pm2 save  # Сохраняем текущее состояние PM2
+          echo "Bot is running."
 
       - name: Final PM2 logs check
-        run: pm2 logs discord-bot --raw || echo "No logs found."
+        run: pm2 logs pinebot --raw || echo "No logs found."
