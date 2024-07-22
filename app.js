@@ -10,6 +10,8 @@ const User = require('./src/models/User');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const discordModals = require('discord-modals');
 const express = require('express');
+const axios = require('axios'); // Убедитесь, что axios установлен
+const cheerio = require('cheerio'); // Убедитесь, что cheerio установлен
 
 const app = express();
 const port = process.env.PORT || 3000; // Укажите порт, если нужно
@@ -26,9 +28,9 @@ app.use(express.json());
 app.post('/webhook', (req, res) => {
     console.log('Received webhook:', req.body);
     if (req.body.action === 'push') {
-        console.log('Restarting bot...');
-        // Здесь вы можете добавить логику для перезапуска бота
-        // Например, вы можете использовать child_process для перезапуска
+        console.log('Received a push event! Restarting bot...');
+        // Логика для перезапуска бота, если нужно
+        // Можно реализовать это через process.exit() или использовать PM2
     }
     res.status(200).send('Webhook received');
 });
@@ -57,15 +59,13 @@ client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     setInterval(checkWebsite, CHECK_INTERVAL);
 
-    const CHANNEL_ID = '1264719358563979325';
-    // Находим канал по ID
-const channel = client.channels.cache.get(CHANNEL_ID);
-if (channel) {
-   // Отправляем сообщение
-   channel.send('Привет, мир! Это сообщение от бота.').catch(console.error);
-} else {
-   console.log('Канал не найден');
-}
+    // Отправляем сообщение в канал
+    const channel = client.channels.cache.get(CHANNEL_ID);
+    if (channel) {
+        channel.send('Привет, мир! Это сообщение от бота.').catch(console.error);
+    } else {
+        console.log('Канал не найден');
+    }
 });
 
 async function checkWebsite() {
@@ -121,6 +121,13 @@ client.on("interactionCreate", async (interaction) => {
     }
 });
 
+// Инициализация базы данных
 mongoose.init();
 
+// Логинимся в бота
 client.login(process.env.DISCORD_TOKEN).catch(console.error);
+
+// Запуск сервера Express
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});

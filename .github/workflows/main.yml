@@ -30,6 +30,10 @@ jobs:
         run: |
           git diff --quiet HEAD^ HEAD || echo "changed=true" >> $GITHUB_ENV
 
+      - name: Show PM2 logs (for debugging)
+        if: env.changed == 'true'
+        run: pm2 logs discord-bot --raw || echo "No logs found."
+
       - name: Start or restart Discord bot
         if: env.changed == 'true'
         env:
@@ -37,7 +41,7 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
-          pm2 start app.js --name "discord-bot" --watch --ignore-watch="node_modules" --no-daemon || pm2 restart "discord-bot"
+          pm2 start app.js --name "discord-bot" --watch --ignore-watch="node_modules" --no-daemon --max-restarts 30 || pm2 restart "discord-bot"
           pm2 save  # Сохраняем текущее состояние pm2
           echo "Bot is running or restarted."
 
