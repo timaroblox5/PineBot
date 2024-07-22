@@ -15,7 +15,7 @@ module.exports = {
     };
 
     mongoose.connect(
-      `mongodb+srv://BFFBOT:${process.env.MONGODB_PASSWORD}@bffbot.hr7tpgj.mongodb.net/?retryWrites=true&w=majority`,
+      `${process.env.MONGODB_CONNECT}`,
       dbOptions
     )
     .then(() => console.log("Connected to MongoDB: PDBOT"))
@@ -31,7 +31,7 @@ module.exports = {
       console.log("MongoDB disconnected. Attempting to reconnect...");
       setTimeout(() => {
         mongoose.connect(
-          `mongodb+srv://BFFBOT:${process.env.MONGODB_PASSWORD}@bffbot.hr7tpgj.mongodb.net/?retryWrites=true&w=majority`,
+          `${process.env.MONGODB_CONNECT}`,
           dbOptions
         ).catch(err => {
           console.error("Reconnection attempt failed:", err);
