@@ -16,18 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loginBtn.classList.add('hidden'); // Скрываем кнопку "Войти"
     }
 
-    // Обработчик события нажатия кнопки "Войти"
-    loginBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const url = `https://discord.com/oauth2/authorize?client_id=1263856580970152020&response_type=code&redirect_uri=https%3A%2F%2Ftimaroblox5.github.io%2FPineBot%2Fservers&scope=identify+guilds`;
-        
-        // Открываем окно авторизации
-        const width = 600;
-        const height = 700;
-        const left = (screen.width / 2) - (width / 2);
-        const top = (screen.height / 2) - (height / 2);
-        window.open(url, 'Discord Login', `width=${width},height=${height},top=${top},left=${left}`);
-    });
+});
 
     // Проверяем наличие кода в URL
     const urlParams = new URLSearchParams(window.location.search);
@@ -56,4 +45,3 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.history.replaceState({ path: newUrl }, '', newUrl);
             });
     }
-});
