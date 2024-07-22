@@ -131,6 +131,3 @@ client.login(process.env.DISCORD_TOKEN).catch(console.error);
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
-
-
-// Hello
