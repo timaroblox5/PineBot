@@ -3,42 +3,42 @@ name: Pinebot
 on:
   push:
     branches:
-      - main
+      - main  # Событие будет запускаться при каждом коммите в ветку main
   schedule:
     - cron: '*/1 * * * *'  # Каждую минуту
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Используем последнюю версию Ubuntu
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3  # Клонируем репозиторий
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3  # Устанавливаем Node.js
         with:
-          node-version: '20'
+          node-version: '20'  # Задаем версию Node.js
 
       - name: Install PM2 globally
-        run: npm install -g pm2
+        run: npm install -g pm2  # Устанавливаем PM2
 
       - name: Start Discord bot
         env:
-          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}  # Настраиваем переменные окружения
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
-          pm2 stop pinebot || echo "No previous instance found."
-          pm2 delete pinebot || echo "No previous instance found."
-          pm2 start app.js --name "pinebot" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env
+          pm2 stop pinebot || echo "No previous instance found."  # Останавливаем предыдущий экземпляр бота
+          pm2 delete pinebot || echo "No previous instance found."  # Удаляем предыдущий экземпляр бота
+          pm2 start app.js --name "pinebot" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env  # Запускаем бота
           pm2 save  # Сохраняем текущее состояние PM2
-          echo "Bot is running."
+          echo "Bot is running."  # Подтверждаем запуск бота
 
       - name: Start Web Server
         run: |
-          pm2 stop webserver || echo "No previous instance found."
-          pm2 delete webserver || echo "No previous instance found."
-          pm2 start server.js --name "webserver" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env
+          pm2 stop webserver || echo "No previous instance found."  # Останавливаем предыдущий экземпляр веб-сервера
+          pm2 delete webserver || echo "No previous instance found."  # Удаляем предыдущий экземпляр веб-сервера
+          pm2 start server.js --name "webserver" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env  # Запускаем веб-сервер
           pm2 save  # Сохраняем текущее состояние PM2
-          echo "Web server is running."
+          echo "Web server is running."  # Подтверждаем запуск веб-сервера
