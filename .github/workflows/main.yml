@@ -44,6 +44,7 @@ jobs:
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
           nohup node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
 
