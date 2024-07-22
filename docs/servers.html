@@ -98,13 +98,16 @@
 
         // Функция для получения информации о пользователе
         function fetchUserInfo(code) {
-            fetch(`/auth?code=${code}`)  // Ваш сервер должен обрабатывать этот маршрут
+            return fetch(`/auth?code=${code}`)  // Ваш сервер должен обрабатывать этот маршрут
                 .then(response => response.json())
                 .then(data => {
                     if (data.user) {
                         const avatar = document.getElementById('avatar');
                         avatar.src = data.user.avatarUrl;  // Убедитесь, что URL аватара возвращается на стороне сервера
                         avatar.style.display = 'block'; // Показываем аватар
+                        return data.user; // Возвращаем данные о пользователе
+                    } else {
+                        throw new Error('Не удалось получить информацию о пользователе');
                     }
                 })
                 .catch(error => {
@@ -116,23 +119,26 @@
         function fetchServers() {
             const code = new URLSearchParams(window.location.search).get('code');
             if (code) {
-                fetchUserInfo(code);  // Получаем информацию о пользователе
-                fetch(`/servers?code=${code}`) // Запрос на получение серверов
-                    .then(response => response.json())
-                    .then(data => {
-                        const serverList = document.getElementById('server-list');
-                        serverList.innerHTML = '';
-                        data.servers.forEach(server => {
-                            // Проверяем, является ли пользователь создателем сервера
-                            if (server.ownerId === data.user.id) {
-                                const li = document.createElement('li');
-                                li.textContent = `${server.name} (ID: ${server.id})`;
-                                serverList.appendChild(li);
-                            }
-                        });
-                    })
-                    .catch(error => {
-                        console.error('Ошибка при получении серверов:', error);
+                fetchUserInfo(code)  // Получаем информацию о пользователе
+                    .then(user => {
+                        fetch(`/servers?code=${code}`) // Запрос на получение серверов
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('Данные о серверах:', data); // Отладка: выводим полученные данные
+                                const serverList = document.getElementById('server-list');
+                                serverList.innerHTML = '';
+                                data.servers.forEach(server => {
+                                    // Проверяем, является ли пользователь создателем сервера
+                                    if (server.ownerId === user.id) {
+                                        const li = document.createElement('li');
+                                        li.textContent = `${server.name} (ID: ${server.id})`;
+                                        serverList.appendChild(li);
+                                    }
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Ошибка при получении серверов:', error);
+                            });
                     });
             } else {
                 // Если кода нет, можно направить на страницу авторизации
