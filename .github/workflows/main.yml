@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '*/1 * * * *'  # Каждую минуту
 
 jobs:
   deploy:
@@ -21,26 +23,22 @@ jobs:
       - name: Install PM2 globally
         run: npm install -g pm2
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Check installed packages
-        run: npm list
-
-      - name: Stop old bot process
-        run: |
-          pm2 stop pinebot || echo "No previous instance found."
-
-      - name: Cleanup old processes
-        run: |
-          pm2 delete pinebot || echo "No previous instance found."
-
       - name: Start Discord bot
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
+          pm2 stop pinebot || echo "No previous instance found."
+          pm2 delete pinebot || echo "No previous instance found."
           pm2 start app.js --name "pinebot" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env
           pm2 save  # Сохраняем текущее состояние PM2
           echo "Bot is running."
+
+      - name: Start Web Server
+        run: |
+          pm2 stop webserver || echo "No previous instance found."
+          pm2 delete webserver || echo "No previous instance found."
+          pm2 start server.js --name "webserver" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env
+          pm2 save  # Сохраняем текущее состояние PM2
+          echo "Web server is running."
