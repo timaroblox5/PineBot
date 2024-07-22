@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # Используем встроенное действие
+        uses: actions/checkout@v2
 
       - name: Set up Node.js
         run: |
@@ -38,12 +38,12 @@ jobs:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: |
-          nohup node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
+          nohup node app.js & echo $! > bot.pid
 
       - name: Wait for changes or status
         run: |
           while true; do 
-            sleep 300  # Проверяем каждые 5 минут
+            sleep 300
             if [ -f "status.txt" ]; then
               STATUS=$(cat status.txt)
               if [ "$STATUS" = "остановлен" ]; then
@@ -51,6 +51,18 @@ jobs:
                 exit 0
               fi
             fi
+            
+            # Проверка активности системы
+            IDLE_TIME=$(xprintidle)
+            if [ "$IDLE_TIME" -gt 300000 ]; then  # 5 минут без активности
+              echo "No activity detected, restarting bot..."
+              if [ -f "bot.pid" ]; then
+                kill $(cat bot.pid) || echo "No process to kill"
+                rm bot.pid
+              fi
+              nohup node app.js & echo $! > bot.pid
+            fi
+
             if git fetch && git diff --quiet origin/main; then
               echo "No changes detected."
             else
@@ -59,11 +71,10 @@ jobs:
                 kill $(cat bot.pid) || echo "No process to kill"
                 rm bot.pid
               fi
-              nohup node app.js & echo $! > bot.pid  # Запускаем бот снова
+              nohup node app.js & echo $! > bot.pid
             fi
           done
 
-  # Добавьте этот джоб для остановки запущенного процесса при перезапуске
   stop:
     runs-on: ubuntu-latest
     steps:
