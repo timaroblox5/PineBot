@@ -16,43 +16,31 @@ jobs:
 
       - name: Set up Node.js
         run: |
-          curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
           sudo apt-get install -y nodejs
+          sudo npm install -g pm2  # Устанавливаем pm2 глобально
 
       - name: Install dependencies
         run: npm install
-
-      - name: Check dependencies
-        run: npm list
 
       - name: Check for changes
         id: check_changes
         run: |
           git diff --quiet HEAD^ HEAD || echo "changed=true" >> $GITHUB_ENV
 
-      - name: Stop previous bot instance
-        if: env.changed == 'true'
-        run: |
-          if [ -f "bot.pid" ]; then
-            echo "Stopping previous instance with PID $(cat bot.pid)..."
-            kill $(cat bot.pid) || echo "No process to kill"
-            rm bot.pid
-          fi
-
-      - name: Run Discord bot
+      - name: Start or restart Discord bot
         if: env.changed == 'true'
         env:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
-          nohup node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
+          # Запускаем или перезапускаем бота с помощью pm2
+          pm2 start app.js --name "discord-bot" --watch --ignore-watch="node_modules" || pm2 restart "discord-bot"
+          pm2 save  # Сохраняем текущее состояние pm2
+          echo "Bot is running or restarted."
 
-      - name: Trigger bot workflow
+      - name: Cleanup old processes
         if: env.changed == 'true'
         run: |
-          curl -X POST \
-          -H "Authorization: token ${{ secrets.PINEBOT_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/${{ github.repository }}/actions/workflows/bot.yml/dispatches \
-          -d '{"ref": "main"}'
+          pm2 delete "discord-bot" || echo "No previous instance found."
