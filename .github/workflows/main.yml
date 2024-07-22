@@ -1,7 +1,7 @@
 name: Discord Bot
 
 on:
-  push:  # Теперь реагирует на любые изменения
+  push:
     branches:
       - main
   schedule:
@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2  # Используем встроенное действие
+        uses: actions/checkout@v2
 
       - name: Set up Node.js
         run: |
@@ -39,3 +39,11 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: |
           nohup node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
+
+      - name: Trigger bot workflow
+        run: |
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.PINEBOT_TOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/${{ github.repository }}/actions/workflows/bot.yml/dispatches \
+          -d '{"ref": "main"}'
