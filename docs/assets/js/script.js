@@ -4,7 +4,6 @@ document.getElementById('login-btn').addEventListener('click', function() {
 
     // Пример: после успешной авторизации
     const user = {
-        name: 'User Name', // Получите имя пользователя из ответа API
         avatar: 'https://example.com/avatar.png' // URL профиля пользователя
     };
     
