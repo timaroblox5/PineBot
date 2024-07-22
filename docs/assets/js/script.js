@@ -1,31 +1,16 @@
-document.getElementById('login-btn').addEventListener('click', function() {
-    // Здесь можно добавить логику для авторизации пользователя
-    // Например, используйте oAuth для Discord
-
-    // Пример: после успешной авторизации
-    const user = {
-        avatar: 'https://example.com/avatar.png' // URL профиля пользователя
-    };
-    
-    // Обновляем интерфейс
-    document.getElementById('login-btn').classList.add('hidden');
-    const profilePic = document.getElementById('profile-pic');
-    profilePic.src = user.avatar;
-    profilePic.alt = user.name;
-    document.getElementById('profile').classList.remove('hidden');
-});
-
 document.addEventListener('DOMContentLoaded', () => {
     const profile = document.getElementById('profile');
     const profilePic = document.getElementById('profile-pic');
+    const username = document.getElementById('username');
 
     // Проверяем, есть ли данные пользователя в localStorage
     const user = JSON.parse(localStorage.getItem('user'));
 
     if (user) {
-        // Если данные есть, отображаем аватар и скрываем кнопку входа
+        // Если данные есть, отображаем аватар и имя
         profilePic.src = user.avatar_url;
         profilePic.alt = user.username;
+        username.textContent = user.username;
         profile.classList.remove('hidden');
         document.getElementById('login-btn').classList.add('hidden');
     }
@@ -48,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Обновляем интерфейс
                 profilePic.src = userInfo.avatar_url;
                 profilePic.alt = userInfo.username;
+                username.textContent = userInfo.username;
                 profile.classList.remove('hidden');
                 document.getElementById('login-btn').classList.add('hidden');
 
