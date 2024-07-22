@@ -42,3 +42,11 @@ jobs:
           pm2 start server.js --name "webserver" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env  # Запускаем веб-сервер
           pm2 save  # Сохраняем текущее состояние PM2
           echo "Web server is running."  # Подтверждаем запуск веб-сервера
+      
+      - name: Build and Deploy to GitHub Pages
+        run: |
+          npm install --save-dev gh-pages  # Устанавливаем gh-pages для деплоя
+          npm run build  # Команда для сборки вашего проекта (например, если у вас есть build скрипт в package.json)
+          npx gh-pages -d build  # Деплой на GitHub Pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Токен для доступа к вашему репозиторию
