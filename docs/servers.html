@@ -40,7 +40,7 @@
             padding: 10px;
             border-radius: 5px;
         }
-        #user-avatar {
+        #avatar {
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -59,7 +59,7 @@
                 <a href="#about">О нас</a>
                 <a href="#contact">Контакт</a>
                 <a id="theme-toggle" href="#">Сменить тему</a>
-                <a id="user-avatar" href="#" title="Пользователь">
+                <a href="#" title="Пользователь">
                     <img id="avatar" src="" alt="Аватар" />
                 </a>
             </div>
@@ -72,7 +72,7 @@
     </div>
 
     <div class="container">
-        <h2>Список ваших серверов</h2>
+        <h2>Ваши серверы (вы создатель)</h2>
         <ul id="server-list">
             <!-- Здесь будет список серверов пользователя -->
         </ul>
@@ -86,27 +86,6 @@
             document.body.classList.add(savedTheme);
         }
 
-        // Функция для авторизации
-        function login() {
-            window.location.href = `https://discord.com/oauth2/authorize?client_id=1263856580970152020&response_type=code&redirect_uri=https%3A%2F%2Ftimaroblox5.github.io%2FPineBot%2Fservers&scope=identify+guilds`;
-        }
-
-        // Получение информации о пользователе
-        function fetchUserInfo(code) {
-            fetch(`/auth?code=${code}`)  // Ваш сервер должен обрабатывать этот маршрут
-                .then(response => response.json())
-                .then(data => {
-                    if (data.user) {
-                        const avatar = document.getElementById('avatar');
-                        avatar.src = data.user.avatarUrl;  // Убедитесь, что URL аватара возвращается на стороне сервера
-                        document.getElementById('user-avatar').style.display = 'block'; // Показываем аватар
-                    }
-                })
-                .catch(error => {
-                    console.error('Ошибка при получении информации о пользователе:', error);
-                });
-        }
-
         document.getElementById('theme-toggle').addEventListener('click', (e) => {
             e.preventDefault();
             document.body.classList.toggle('dark');
@@ -117,27 +96,47 @@
             localStorage.setItem('theme', currentTheme);
         });
 
-        // Получение списка серверов пользователя
+        // Функция для получения информации о пользователе
+        function fetchUserInfo(code) {
+            fetch(`/auth?code=${code}`)  // Ваш сервер должен обрабатывать этот маршрут
+                .then(response => response.json())
+                .then(data => {
+                    if (data.user) {
+                        const avatar = document.getElementById('avatar');
+                        avatar.src = data.user.avatarUrl;  // Убедитесь, что URL аватара возвращается на стороне сервера
+                        avatar.style.display = 'block'; // Показываем аватар
+                    }
+                })
+                .catch(error => {
+                    console.error('Ошибка при получении информации о пользователе:', error);
+                });
+        }
+
+        // Получение списка серверов пользователя, где он является создателем
         function fetchServers() {
             const code = new URLSearchParams(window.location.search).get('code');
             if (code) {
                 fetchUserInfo(code);  // Получаем информацию о пользователе
-                fetch(`/servers?code=${code}`)
+                fetch(`/servers?code=${code}`) // Запрос на получение серверов
                     .then(response => response.json())
                     .then(data => {
                         const serverList = document.getElementById('server-list');
                         serverList.innerHTML = '';
                         data.servers.forEach(server => {
-                            const li = document.createElement('li');
-                            li.textContent = `${server.name} (ID: ${server.id})`;
-                            serverList.appendChild(li);
+                            // Проверяем, является ли пользователь создателем сервера
+                            if (server.ownerId === data.user.id) {
+                                const li = document.createElement('li');
+                                li.textContent = `${server.name} (ID: ${server.id})`;
+                                serverList.appendChild(li);
+                            }
                         });
                     })
                     .catch(error => {
                         console.error('Ошибка при получении серверов:', error);
                     });
             } else {
-                login();  // Если кода нет, то вызываем функцию для входа
+                // Если кода нет, можно направить на страницу авторизации
+                window.location.href = `https://discord.com/oauth2/authorize?client_id=1263856580970152020&response_type=code&redirect_uri=https%3A%2F%2Ftimaroblox5.github.io%2FPineBot%2Fservers&scope=identify+guilds`;
             }
         }
 
