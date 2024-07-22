@@ -48,6 +48,46 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
+const CHANNEL_ID = '1264719358563979325';
+const CHECK_INTERVAL = 300000; // 5 минут
+
+let lastContent = ''; // Переменная для хранения последнего контента
+
+client.once('ready', () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+    setInterval(checkWebsite, CHECK_INTERVAL);
+
+    const CHANNEL_ID = '1264719358563979325';
+    // Находим канал по ID
+const channel = client.channels.cache.get(CHANNEL_ID);
+if (channel) {
+   // Отправляем сообщение
+   channel.send('Привет, мир! Это сообщение от бота.').catch(console.error);
+} else {
+   console.log('Канал не найден');
+}
+});
+
+async function checkWebsite() {
+    try {
+        const response = await axios.get('https://timaroblox5.github.io/PineBot/');
+        const $ = cheerio.load(response.data);
+        
+        // Предположим, что вы хотите проверить текст в определенном элементе
+        const newContent = $('#targetElementId').text(); // Замените на корректный селектор
+
+        if (newContent !== lastContent) {
+            lastContent = newContent;
+            const channel = client.channels.cache.get(CHANNEL_ID);
+            if (channel) {
+                channel.send('Содержимое сайта обновилось!').catch(console.error);
+            }
+        }
+    } catch (error) {
+        console.error('Ошибка проверки сайта:', error);
+    }
+}
+
 // Загрузка событий
 const eventFiles = fs.readdirSync(path.join(__dirname, 'src/events')).filter(file => file.endsWith('.js'));
 
