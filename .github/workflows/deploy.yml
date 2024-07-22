@@ -1,0 +1,27 @@
+name: Deploy Discord Bot
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Start Bot
+      run: node your-bot-file.js  # Замените на имя вашего файла
+      env:
+        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}  # Добавьте ваш токен в secrets
