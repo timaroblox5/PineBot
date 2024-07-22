@@ -82,7 +82,7 @@ module.exports = {
                 if (i.customId === 'previous' && currentPage > 1) {
                     currentPage--;
                     // Обработка перемещения на предыдущую страницу и обновление встроенного сообщения
-                } else if (i.customId === 'next') {
+                } else if (i.customId === 'next' && currentPage < 1) {
                     currentPage++;
                     // Обработка перемещения на следующую страницу и обновление встроенного сообщения
                 } else if (i.customId === 'close') {
