@@ -20,11 +20,22 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Install PM2 globally
+        run: npm install -g pm2
+
       - name: Install dependencies
         run: npm install
 
       - name: Check installed packages
         run: npm list
+
+      - name: Stop old bot process
+        run: |
+          pm2 stop pinebot || echo "No previous instance found."
+
+      - name: Cleanup old processes
+        run: |
+          pm2 delete pinebot || echo "No previous instance found."
 
       - name: Start Discord bot
         env:
@@ -32,5 +43,6 @@ jobs:
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         run: |
-          nohup node app.js > output.log 2>&1 &
+          pm2 start app.js --name "pinebot" --watch --ignore-watch="node_modules" --max-restarts 30 --update-env
+          pm2 save  # Сохраняем текущее состояние PM2
           echo "Bot is running."
