@@ -51,14 +51,3 @@ jobs:
               nohup node app.js & echo $! > bot.pid
             fi
           done
-
-  stop:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Stop previous bot instance
-        run: |
-          if [ -f "bot.pid" ]; then
-            echo "Stopping previous instance..."
-            kill $(cat bot.pid) || echo "No process to kill"
-            rm bot.pid
-          fi
