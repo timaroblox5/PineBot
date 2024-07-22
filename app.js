@@ -9,12 +9,29 @@ const Levels = require('discord-xp');
 const User = require('./src/models/User');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const discordModals = require('discord-modals');
+const express = require('express');
+
+const app = express();
+const port = process.env.PORT || 3000; // Укажите порт, если нужно
 
 // Создаем клиента
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 discordModals(client);
 
 client.commands = new Collection();
+
+// Обработка входящего вебхука
+app.use(express.json());
+
+app.post('/webhook', (req, res) => {
+    console.log('Received webhook:', req.body);
+    if (req.body.action === 'push') {
+        console.log('Restarting bot...');
+        // Здесь вы можете добавить логику для перезапуска бота
+        // Например, вы можете использовать child_process для перезапуска
+    }
+    res.status(200).send('Webhook received');
+});
 
 // Загрузка команд
 const commandFiles = fs.readdirSync(path.join(__dirname, 'src/commands')).filter(file => file.endsWith('.js'));
