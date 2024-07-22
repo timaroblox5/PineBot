@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  # Используем встроенное действие
 
       - name: Set up Node.js
         run: |
@@ -22,10 +22,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Check dependencies
+        run: npm list
+
       - name: Stop previous bot instance
         run: |
           if [ -f "bot.pid" ]; then
-            echo "Stopping previous instance..."
+            echo "Stopping previous instance with PID $(cat bot.pid)..."
             kill $(cat bot.pid) || echo "No process to kill"
             rm bot.pid
           fi
@@ -35,20 +38,39 @@ jobs:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         run: |
-          nohup node app.js & echo $! > bot.pid
+          nohup node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
 
-      - name: Monitor for changes
+      - name: Wait for changes or status
         run: |
-          while true; do
+          while true; do 
             sleep 1  # Проверяем каждые 5 минут
-            
-            # Проверка изменений
-            if git fetch && ! git diff --quiet origin/main; then
+            if [ -f "status.txt" ]; then
+              STATUS=$(cat status.txt)
+              if [ "$STATUS" = "остановлен" ]; then
+                echo "Bot is stopped as per status file."
+                exit 0
+              fi
+            fi
+            if git fetch && git diff --quiet origin/main; then
+              echo "No changes detected."
+            else
               echo "Changes detected, restarting bot..."
               if [ -f "bot.pid" ]; then
                 kill $(cat bot.pid) || echo "No process to kill"
                 rm bot.pid
               fi
-              nohup node app.js & echo $! > bot.pid
+              nohup node app.js & echo $! > bot.pid  # Запускаем бот снова
             fi
           done
+
+  # Добавьте этот джоб для остановки запущенного процесса при перезапуске
+  stop:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop previous bot instance
+        run: |
+          if [ -f "bot.pid" ]; then
+            echo "Stopping previous instance with PID $(cat bot.pid)..."
+            kill $(cat bot.pid) || echo "No process to kill"
+            rm bot.pid
+          fi
