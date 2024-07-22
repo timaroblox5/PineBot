@@ -19,4 +19,11 @@ jobs:
           node-version: '14'  # Укажи нужную версию Node.js
 
       - name: Run app.js
+        env:
+          DISCORD_TOKEN: '${{ secrets.DISCORD_TOKEN }}'
+          CLIENT_SECRET: '${{ secrets.CLIENT_SECRET }}'
+          MONGODB_PASSWORD: '${{ secrets.MONGODB_PASSWORD }}'
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          PINEBOT_TOKEN: '${{ secrets.PINEBOT_TOKEN }}'
+           # Здесь добавляем переменные окружения
         run: node app.js
