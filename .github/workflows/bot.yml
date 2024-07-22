@@ -1,60 +1,16 @@
-name: Discord Bot
+name: Bot Actions
 
 on:
-  push:
-    branches:
-      - main
-  schedule:
-    - cron: '*/5 * * * *'  # Каждые 5 минут
+  workflow_dispatch:  # Позволяет триггерить вручную или через API
 
 jobs:
-  deploy:
+  run-bot:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2  # Используем встроенное действие
 
-      - name: Set up Node.js
+      - name: Run additional bot actions
         run: |
-          curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Check dependencies
-        run: npm list
-
-      - name: Stop previous bot instance
-        run: |
-          if [ -f "bot.pid" ]; then
-            echo "Stopping previous instance with PID $(cat bot.pid)..."
-            kill $(cat bot.pid) || echo "No process to kill"
-            rm bot.pid
-          fi
-
-      - name: Run Discord bot
-        env:
-          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-        run: |
-          nohup node app.js & echo $! > bot.pid  # Запускаем бот в фоновом режиме и сохраняем PID
-
-      - name: Trigger bot workflow
-        run: |
-          curl -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/timaroblox5/PineBot/actions/workflows/bot.yml/dispatches \
-          -d '{"ref": "main"}'
-
-  stop:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Stop previous bot instance
-        run: |
-          if [ -f "bot.pid" ]; then
-            echo "Stopping previous instance with PID $(cat bot.pid)..."
-            kill $(cat bot.pid) || echo "No process to kill"
-            rm bot.pid
-          fi
+          echo "Running additional bot actions..."
+          # Здесь можно добавить действия, которые должны выполняться в bot.yml
