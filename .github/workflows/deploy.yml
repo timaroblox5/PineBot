@@ -28,4 +28,3 @@ jobs:
         MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         PINEBOT_TOKEN: ${{ secrets.PINEBOT_TOKEN }}
-    
