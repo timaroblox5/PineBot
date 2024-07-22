@@ -12,13 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Обновлено до последней версии
+        uses: actions/checkout@v3  # Используем актуальную версию
 
       - name: Set up Node.js
-        run: |
-          curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          sudo npm install -g pm2  # Устанавливаем pm2 глобально
+        uses: actions/setup-node@v3  # Установите Node.js через действие setup-node
+        with:
+          node-version: '20'  # Явно указываем версию Node.js
+
+      - name: Install PM2 globally
+        run: npm install -g pm2  # Устанавливаем pm2 глобально
 
       - name: Install dependencies
         run: npm install
