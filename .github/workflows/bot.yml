@@ -47,7 +47,6 @@ jobs:
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/timaroblox5/PineBot/actions/workflows/bot.yml/dispatches \
           -d '{"ref": "main"}'
-          # Замените timaroblox5 и PineBot на соответствующие значения
 
   stop:
     runs-on: ubuntu-latest
