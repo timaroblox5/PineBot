@@ -25,6 +25,7 @@ jobs:
       run: node app.js
       env:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-        MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+        MONGODB_CONNECT: ${{ secrets.MONGODB_CONNECT }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
         PINEBOT_TOKEN: ${{ secrets.PINEBOT_TOKEN }}
+        #.

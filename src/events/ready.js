@@ -5,3 +5,4 @@ module.exports = {
         console.log(`Бот ${client.user.tag} готов к работе!`);
     },
 };
+//.

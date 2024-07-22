@@ -3,4 +3,4 @@ updates:
   - package-ecosystem: "npm" # Указывает на экосистему npm (Node.js)
     directory: "/"            # Путь до корневой директории с package.json
     schedule:
-      interval: "weekly"      # Частота проверки обновлений (еженедельно)
+      interval: "weekly"      # Частота проверки обновлений (еженедельно).

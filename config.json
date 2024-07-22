@@ -1,4 +1,4 @@
 {
     "EMBED_COLOR": "#313338",
-    "PREFIX": "!"
+    "PREFIX": ["!", "pd."]
 }
