@@ -1,5 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const User = require('../models/User'); // Adjust the path as per your project structure
+const config = require('../../config.json');
 
 module.exports = {
     data: {

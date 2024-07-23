@@ -1,6 +1,7 @@
 const { MessageEmbed } = require('discord.js');
 const Levels = require('discord-xp');
 const User = require('../models/User'); // Import the user model
+const config = require('../../config.json');
 
 module.exports = {
     data: {

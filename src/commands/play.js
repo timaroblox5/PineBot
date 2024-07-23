@@ -1,6 +1,7 @@
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, VoiceConnectionStatus } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
 const { Interaction } = require('discord.js');
+const config = require('../../config.json');
 
 module.exports = {
     data: {
@@ -16,27 +17,21 @@ module.exports = {
         ],
     },
     async execute(interaction) {
-        // Проверяем, является ли interaction объектом и имеет ли необходимые свойства
-        if (!(interaction instanceof Interaction) || !interaction.options) {
-            console.error('Interaction не правильный:', interaction);
+        // Проверка, что interaction корректный
+        if (!interaction || interaction.type !== 'APPLICATION_COMMAND') {
             return interaction.reply('❌ Произошла ошибка, попробуйте снова!');
         }
 
         // Получаем URL из команды
         const url = interaction.options.getString('url');
-        
-        // Логируем URL для отладки
-        console.log('Получен URL:', url);
-
         const member = interaction.member;
+
         const voiceChannel = member.voice.channel;
-        
         if (!voiceChannel) {
             return interaction.reply('❌ Вы должны быть в голосовом канале для использования этой команды!');
         }
 
         try {
-            // Получаем информацию о видео
             const videoInfo = await ytdl.getInfo(url);
             const title = videoInfo.videoDetails.title;
 
@@ -55,7 +50,6 @@ module.exports = {
             });
 
             player.play(resource);
-
             await interaction.reply(`▶️ Воспроизведение песни: **${title}**`);
 
             let timeout = null;
