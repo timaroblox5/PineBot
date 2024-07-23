@@ -1,7 +1,6 @@
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, VoiceConnectionStatus } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
 const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
-const config = require('../../config.json');
 
 module.exports = {
     data: {
@@ -17,6 +16,11 @@ module.exports = {
         ],
     },
     async execute(interaction) {
+        // Проверка если interaction доступен 
+        if (!interaction || !interaction.options) {
+            return interaction.reply('❌ Произошла ошибка, попробуйте снова!');
+        }
+
         const url = interaction.options.getString('url');
         const member = interaction.member;
 
@@ -25,9 +29,8 @@ module.exports = {
             return interaction.reply('❌ Вы должны быть в голосовом канале для использования этой команды!');
         }
 
-        // Получаем информацию о видео
         const videoInfo = await ytdl.getInfo(url);
-        const title = videoInfo.videoDetails.title; // Название видео
+        const title = videoInfo.videoDetails.title;
 
         const connection = joinVoiceChannel({
             channelId: voiceChannel.id,
@@ -48,7 +51,6 @@ module.exports = {
 
         await interaction.reply(`▶️ Воспроизведение песни: **${title}**`);
 
-        // Таймер на отключение бота
         let timeout = null;
 
         const checkVoiceState = () => {
@@ -58,7 +60,7 @@ module.exports = {
                 timeout = setTimeout(() => {
                     connection.destroy();
                     console.log('Бот покинул голосовой канал - никого не было в течение 5 минут');
-                }, 5 * 60 * 1000); // 5 минут
+                }, 5 * 60 * 1000);
             } else {
                 clearTimeout(timeout);
                 timeout = null;
