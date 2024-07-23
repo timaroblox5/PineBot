@@ -9,7 +9,7 @@ module.exports = {
     },
     async execute(message) {
         // ID роли, которая необходима для выполнения команды
-        const adminRoleId = 'YOUR_ADMIN_ROLE_ID'; // Замените на настоящий ID роли, необходимой для выполнения команды
+        const adminRoleId = '1264723076306702458'; // Замените на настоящий ID роли, необходимой для выполнения команды
 
         // Проверка наличия роли по ID
         if (!message.member.roles.cache.has(adminRoleId)) {
