@@ -10,6 +10,7 @@ const User = require('./src/models/User');
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const discordModals = require('discord-modals');
 const express = require('express');
+const boosty = require('./src/api/boosty')
 const axios = require('axios'); // Убедитесь, что axios установлен
 const cheerio = require('cheerio'); // Убедитесь, что cheerio установлен
 
