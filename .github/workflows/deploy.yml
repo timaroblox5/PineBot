@@ -11,12 +11,12 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3  # Обновлено до v3
+      uses: actions/checkout@v3
 
     - name: Set up Node.js
-      uses: actions/setup-node@v3  # Обновлено до v3
+      uses: actions/setup-node@v3
       with:
-        node-version: '20'  # Обновлено до Node.js 20
+        node-version: '20'
 
     - name: Install dependencies
       run: npm install
@@ -26,7 +26,7 @@ jobs:
 
     - name: Start Bot with pm2
       run: |
-        pm2 start app.js --name discord-bot
+        pm2 start app.js --name discord-bot --watch --restart-delay 1000
       env:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         MONGODB_CONNECT: ${{ secrets.MONGODB_CONNECT }}
