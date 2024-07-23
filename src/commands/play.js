@@ -1,6 +1,6 @@
 const { joinVoiceChannel, createAudioPlayer, createAudioResource, VoiceConnectionStatus } = require('@discordjs/voice');
 const ytdl = require('ytdl-core');
-const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
+const { Interaction } = require('discord.js');
 
 module.exports = {
     data: {
@@ -16,64 +16,75 @@ module.exports = {
         ],
     },
     async execute(interaction) {
-        // Проверка если interaction доступен 
-        if (!interaction || !interaction.options) {
+        // Проверяем, является ли interaction объектом и имеет ли необходимые свойства
+        if (!(interaction instanceof Interaction) || !interaction.options) {
+            console.error('Interaction не правильный:', interaction);
             return interaction.reply('❌ Произошла ошибка, попробуйте снова!');
         }
 
+        // Получаем URL из команды
         const url = interaction.options.getString('url');
-        const member = interaction.member;
+        
+        // Логируем URL для отладки
+        console.log('Получен URL:', url);
 
+        const member = interaction.member;
         const voiceChannel = member.voice.channel;
+        
         if (!voiceChannel) {
             return interaction.reply('❌ Вы должны быть в голосовом канале для использования этой команды!');
         }
 
-        const videoInfo = await ytdl.getInfo(url);
-        const title = videoInfo.videoDetails.title;
+        try {
+            // Получаем информацию о видео
+            const videoInfo = await ytdl.getInfo(url);
+            const title = videoInfo.videoDetails.title;
 
-        const connection = joinVoiceChannel({
-            channelId: voiceChannel.id,
-            guildId: member.guild.id,
-            adapterCreator: member.guild.voiceAdapterCreator,
-        });
+            const connection = joinVoiceChannel({
+                channelId: voiceChannel.id,
+                guildId: member.guild.id,
+                adapterCreator: member.guild.voiceAdapterCreator,
+            });
 
-        const player = createAudioPlayer();
-        connection.subscribe(player);
+            const player = createAudioPlayer();
+            connection.subscribe(player);
 
-        const stream = ytdl(url, { filter: 'audioonly' });
+            const stream = ytdl(url, { filter: 'audioonly' });
+            const resource = createAudioResource(stream, {
+                inlineVolume: true,
+            });
 
-        const resource = createAudioResource(stream, {
-            inlineVolume: true,
-        });
+            player.play(resource);
 
-        player.play(resource);
+            await interaction.reply(`▶️ Воспроизведение песни: **${title}**`);
 
-        await interaction.reply(`▶️ Воспроизведение песни: **${title}**`);
+            let timeout = null;
 
-        let timeout = null;
+            const checkVoiceState = () => {
+                const members = voiceChannel.members;
+                if (members.size === 0) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                        connection.destroy();
+                        console.log('Бот покинул голосовой канал - никого не было в течение 5 минут');
+                    }, 5 * 60 * 1000);
+                } else {
+                    clearTimeout(timeout);
+                    timeout = null;
+                }
+            };
 
-        const checkVoiceState = () => {
-            const members = voiceChannel.members;
-            if (members.size === 0) {
+            checkVoiceState();
+
+            connection.on(VoiceConnectionStatus.Disconnected, () => {
                 clearTimeout(timeout);
-                timeout = setTimeout(() => {
-                    connection.destroy();
-                    console.log('Бот покинул голосовой канал - никого не было в течение 5 минут');
-                }, 5 * 60 * 1000);
-            } else {
-                clearTimeout(timeout);
-                timeout = null;
-            }
-        };
+                console.log('Бот отключен от голосового канала.');
+            });
 
-        checkVoiceState();
-
-        connection.on(VoiceConnectionStatus.Disconnected, () => {
-            clearTimeout(timeout);
-            console.log('Бот отключен от голосового канала.');
-        });
-
-        setInterval(checkVoiceState, 30 * 1000);
+            setInterval(checkVoiceState, 30 * 1000);
+        } catch (error) {
+            console.error('Ошибка воспроизведения:', error);
+            await interaction.reply('❌ Произошла ошибка при воспроизведении песни. Проверьте URL.');
+        }
     },
 };
