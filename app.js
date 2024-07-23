@@ -124,8 +124,17 @@ client.on("interactionCreate", async (interaction) => {
 // Инициализация базы данных
 mongoose.init();
 
-// Логинимся в бота
-client.login(process.env.DISCORD_TOKEN).catch(console.error);
+const startBot = async () => {
+    try {
+        await client.login(process.env.DISCORD_TOKEN);
+    } catch (error) {
+        console.error('Failed to login:', error);
+        setTimeout(startBot, 5000); // Попытка перезапуска через 5 секунд
+    }
+};
+
+startBot(); // Запуск бота
+
 
 // Запуск сервера Express
 app.listen(port, () => {
