@@ -25,6 +25,10 @@ module.exports = {
             return interaction.reply('❌ Вы должны быть в голосовом канале для использования этой команды!');
         }
 
+        // Получаем информацию о видео
+        const videoInfo = await ytdl.getInfo(url);
+        const title = videoInfo.videoDetails.title; // Название видео
+
         const connection = joinVoiceChannel({
             channelId: voiceChannel.id,
             guildId: member.guild.id,
@@ -37,12 +41,12 @@ module.exports = {
         const stream = ytdl(url, { filter: 'audioonly' });
 
         const resource = createAudioResource(stream, {
-            inlineVolume: true, // Позволяет управлять громкостью
+            inlineVolume: true,
         });
 
         player.play(resource);
 
-        await interaction.reply(`▶️ Воспроизведение песни: ${url}`);
+        await interaction.reply(`▶️ Воспроизведение песни: **${title}**`);
 
         // Таймер на отключение бота
         let timeout = null;
@@ -63,13 +67,11 @@ module.exports = {
 
         checkVoiceState();
 
-        // Установим слушатель события на изменение состояния голосового канала
         connection.on(VoiceConnectionStatus.Disconnected, () => {
             clearTimeout(timeout);
             console.log('Бот отключен от голосового канала.');
         });
 
-        // Проверяем состояние комнаты каждые 30 секунд
         setInterval(checkVoiceState, 30 * 1000);
     },
 };
