@@ -7,8 +7,8 @@ on:
 
 jobs:
   build:
+    if: false  # Отключаем все действия в этом job
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.event.ref == 'refs/heads/main' # Условие для запуска
 
     steps:
     - name: Checkout code
@@ -29,11 +29,16 @@ jobs:
         MONGODB_CONNECT: ${{ secrets.MONGODB_CONNECT }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
 
-  # Пример отключённых jobs
   deploy:
+    if: false  # Отключаем этот job
     runs-on: ubuntu-latest
-    if: false  # Это условие делает job недоступным
+    steps:
+      - name: No-op Step
+        run: echo "This job will not run."
 
   test:
+    if: false  # Отключаем этот job
     runs-on: ubuntu-latest
-    if: false  # Это условие делает job недоступным
+    steps:
+      - name: No-op Step
+        run: echo "This job will not run."
