@@ -129,7 +129,7 @@ const startBot = async () => {
         await client.login(process.env.DISCORD_TOKEN);
     } catch (error) {
         console.error('Failed to login:', error);
-        setTimeout(startBot, 5000); // Попытка перезапуска через 5 секунд
+        setTimeout(startBot, 1000); // Попытка перезапуска через 5 секунд
     }
 };
 
