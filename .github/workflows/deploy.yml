@@ -11,18 +11,18 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3  # Используем последнюю версию
 
     - name: Set up Node.js
-      uses: actions/setup-node@v4  # Переключено на v4
+      uses: actions/setup-node@v3  # Используем последнюю версию
       with:
-        node-version: '20'  # Указываем используемую версию Node.js
+        node-version: '20'  # Устанавливаем Node.js версии 20
 
     - name: Install dependencies
       run: npm install
 
     - name: Install pm2 globally
-      run: npm install -g pm2
+      run: npm install -g pm2  # Установка pm2
 
     - name: Start Bot with pm2
       run: |
