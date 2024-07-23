@@ -35,6 +35,18 @@ app.post('/webhook', (req, res) => {
     res.status(200).send('Webhook received');
 });
 
+// API для получения количества пользователей в гильдии
+app.get('/api/user-count', (req, res) => {
+    const guildId = '1264717953597833236'; // Укажите идентификатор вашего сервера
+    const guild = client.guilds.cache.get(guildId);
+    if (guild) {
+        const memberCount = guild.memberCount;
+        res.json({ totalUsers: memberCount });
+    } else {
+        res.status(404).json({ error: 'Гильдия не найдена' });
+    }
+});
+
 // Загрузка команд
 const commandFiles = fs.readdirSync(path.join(__dirname, 'src/commands')).filter(file => file.endsWith('.js'));
 

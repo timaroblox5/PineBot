@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Управление серверами - PineBot</title>
+    <title>Вход - PineBot</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <link rel="icon" href="./assets/favicon.ico">
     <style>
@@ -14,15 +14,8 @@
         h1, h2 {
             color: #333;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin: 10px 0;
-        }
         button {
-            background-color: #4CAF50;
+            background-color: #7289DA; /* Цвет Discord */
             color: white;
             border: none;
             padding: 10px;
@@ -30,13 +23,13 @@
             border-radius: 5px;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #5b6eae;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Управление серверами PineBot</h1>
+        <h1>Вход в PineBot</h1>
         <nav>
             <ul>
                 <li><a href="index.html">Главная</a></li>
@@ -48,10 +41,9 @@
         </nav>
     </header>
     <main>
-        <h2>Список серверов</h2>
-        <p>Выберите сервер, чтобы управлять им:</p>
-        
-        <ul id="serverList"></ul>
+        <h2>Авторизация через Discord</h2>
+        <p>Чтобы войти в PineBot, нажмите на кнопку ниже:</p>
+        <button onclick="window.location.href='https://discord.com/api/oauth2/authorize?client_id=ВАШ_CLIENT_ID&redirect_uri=ВАШ_REDIRECT_URI&response_type=code&scope=identify%20email'">Войти с помощью Discord</button>
 
         <h3>Общее количество пользователей: <strong id="userCount">0</strong></h3>
     </main>
@@ -73,32 +65,7 @@
             }
         }
 
-        async function fetchServers() {
-            try {
-                const response = await fetch('/api/servers');
-                if (response.ok) {
-                    const servers = await response.json();
-                    const serverList = document.getElementById("serverList");
-                    serverList.innerHTML = ''; // Очистка списка
-
-                    servers.forEach(server => {
-                        const listItem = document.createElement('li');
-                        listItem.innerHTML = `
-                            <span>${server.name}</span>
-                            <button onclick="window.location.href='common.html?serverId=${server.id}'">Управлять</button>
-                        `;
-                        serverList.appendChild(listItem);
-                    });
-                } else {
-                    console.error('Не удалось загрузить серверы');
-                }
-            } catch (error) {
-                console.error('Ошибка при загрузке серверов:', error);
-            }
-        }
-
         fetchUserCount();
-        fetchServers();
     </script>
 </body>
 </html>

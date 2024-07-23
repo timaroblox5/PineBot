@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пожертвования - PineBot</title>
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="icon" href="./assets/favicon.ico">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        ul {
+            line-height: 1.6;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        form {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Поддержите PineBot</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="documentation.html">Документация</a></li>
+                <li><a href="commands.html">Команды</a></li>
+                <li><a href="donate.html">Пожертвования</a></li>
+                <li><a href="auth.html">Войти</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Как вы можете поддержать нас</h2>
+        <p>Ваши пожертвования помогут нам улучшать PineBot и добавлять новые функции. Вот несколько способов поддержать нас:</p>
+        
+        <ul>
+            <li>
+                <strong>Пожертвование через Boosty:</strong>
+                <p>Вы можете сделать одноразовое пожертвование через Boosty. Просто нажмите кнопку ниже:</p>
+                <button onclick="window.location.href='https://boosty.to/timaroblox">Пожертвовать через Boosty</button>
+            </li>
+            <li>
+                <strong>Поделиться с друзьями:</strong>
+                <p>Расскажите своим друзьям о PineBot и пригласите их использовать нашего бота. Чем больше у нас пользователей, тем больше возможностей для развития!</p>
+            </li>
+        </ul>
+
+        <h2>На что пойдут ваши пожертвования</h2>
+        <p>Каждое ваше пожертвование будет использоваться для:</p>
+        <ul>
+            <li>Разработки новых функций и улучшений.</li>
+            <li>Обслуживания серверов и хостинга.</li>
+            <li>Тестирования и исправления ошибок.</li>
+            <li>Создания обучающих материалов и документации.</li>
+        </ul>
+
+        <h3>Общее количество пользователей: <strong id="userCount">0</strong></h3>
+
+        <h2>Ваши отзывы и предложения</h2>
+        <form id="feedbackForm">
+            <label for="name">Ваше имя:</label>
+            <input type="text" id="name" name="name" required>
+            
+            <label for="message">Ваше сообщение:</label>
+            <textarea id="message" name="message" required></textarea>
+            
+            <button type="submit">Отправить</button>
+        </form>
+    </main>
+    <footer>
+        <p>© 2024 PineBot. Все права защищены.</p>
+    </footer>
+    <script>
+        async function fetchUserCount() {
+            try {
+                const response = await fetch('/api/user-count');
+                if (!response.ok) {
+                    throw new Error('Ошибка сети');
+                }
+                const data = await response.json();
+                document.getElementById("userCount").innerText = data.totalUsers;
+            } catch (error) {
+                console.error('Не удалось загрузить количество пользователей:', error);
+                document.getElementById("userCount").innerText = 'Ошибка загрузки';
+            }
+        }
+
+        document.getElementById('feedbackForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const message = document.getElementById('message').value;
+
+            // Отправка данных на сервер (примерный API)
+            try {
+                const response = await fetch('/api/feedback', {
+                    method: 'POST',
+                    body: JSON.stringify({ name, message }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (response.ok) {
+                    alert('Ваш отзыв успешно отправлен!');
+                    document.getElementById('feedbackForm').reset();
+                } else {
+                    alert('Не удалось отправить отзыв. Попробуйте снова позже.');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Ошибка отправки. Попробуйте снова.');
+            }
+        });
+
+        // Загружаем количество пользователей при загрузке страницы
+        fetchUserCount();
+    </script>
+</body>
+</html>
