@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.event.ref == 'refs/heads/main' # Условие для запуска
 
     steps:
     - name: Checkout code
@@ -27,3 +28,12 @@ jobs:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         MONGODB_CONNECT: ${{ secrets.MONGODB_CONNECT }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
+  # Пример отключённых jobs
+  deploy:
+    runs-on: ubuntu-latest
+    if: false  # Это условие делает job недоступным
+
+  test:
+    runs-on: ubuntu-latest
+    if: false  # Это условие делает job недоступным
