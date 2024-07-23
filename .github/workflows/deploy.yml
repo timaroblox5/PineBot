@@ -1,6 +1,7 @@
 name: Deploy Discord Bot
 
 on:
+  workflow_dispatch: # Позволяет запускать workflow вручную
   push:
     branches:
       - main
@@ -22,8 +23,16 @@ jobs:
       run: npm install
 
     - name: Start Bot
-      run: node app.js  # Запускаем бота
+      run: node app.js
       env:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         MONGODB_CONNECT: ${{ secrets.MONGODB_CONNECT }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      
+    - name: Wait for 358 minutes
+      run: sleep 214800  # 358 минут в секундах
+
+    - name: Restart job
+      run: echo "Restarting job..."
+      # Здесь можно добавить код для перезапуска или уведомления о необходимости перезапуска
+
