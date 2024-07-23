@@ -7,7 +7,6 @@ on:
 
 jobs:
   build:
-    if: false  # Отключаем все действия в этом job
     runs-on: ubuntu-latest
 
     steps:
@@ -28,17 +27,3 @@ jobs:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         MONGODB_CONNECT: ${{ secrets.MONGODB_CONNECT }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-
-  deploy:
-    if: false  # Отключаем этот job
-    runs-on: ubuntu-latest
-    steps:
-      - name: No-op Step
-        run: echo "This job will not run."
-
-  test:
-    if: false  # Отключаем этот job
-    runs-on: ubuntu-latest
-    steps:
-      - name: No-op Step
-        run: echo "This job will not run."
