@@ -12,7 +12,7 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
+    
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
@@ -27,6 +27,3 @@ jobs:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         MONGODB_CONNECT: ${{ secrets.MONGODB_CONNECT }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-
-    - name: Wait
-      run: echo "Waiting for the next scheduled run..."
