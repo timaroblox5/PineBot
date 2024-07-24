@@ -1,10 +1,9 @@
 name: Deploy Discord Bot
 
 on:
-  workflow_dispatch: # Позволяет запускать workflow вручную
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: '*/358 * * * *'  # Run every 358 minutes
+  workflow_dispatch:  # Allows manual triggering if needed
 
 jobs:
   build:
@@ -28,11 +27,6 @@ jobs:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         MONGODB_CONNECT: ${{ secrets.MONGODB_CONNECT }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-      
-    - name: Wait for 358 minutes
-      run: sleep 214800  # 358 минут в секундах
 
-    - name: Restart job
-      run: echo "Restarting job..."
-      # Здесь можно добавить код для перезапуска или уведомления о необходимости перезапуска
-
+    - name: Wait
+      run: echo "Waiting for the next scheduled run..."
