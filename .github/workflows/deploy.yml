@@ -2,11 +2,13 @@ name: Deploy Discord Bot
 
 on:
   schedule:
-    - cron: '*/358 * * * *'  # Run every 358 minutes
+    - cron: '0 * * * *'  # Запуск каждый час в начале (для первого job)
+    - cron: '58 * * * *'  # Запуск каждые 58 минут (для второго job)
 
 jobs:
-  build:
+  run_bot:
     runs-on: ubuntu-latest
+    timeout-minutes: 60  # Общее время выполнения job
 
     steps:
     - name: Checkout code
@@ -21,8 +23,24 @@ jobs:
       run: npm install
 
     - name: Start Bot
-      run: node app.js
+      run: |
+        echo "Starting bot..."
+        node app.js &  # Запуск бота в фоновом режиме
+        echo "Bot started with process ID $!"
+        sleep 3480  # Подождать 58 минут (3480 секунд)
+        echo "Stopping bot..."
+        kill $!  # Остановить бот
       env:
         DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
         MONGODB_CONNECT: ${{ secrets.MONGODB_CONNECT }}
         CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+
+  check_for_new_jobs:
+    runs-on: ubuntu-latest
+    if: github.event.schedule  # Эта job будет выполняться, только если событие вызвано по расписанию
+
+    steps:
+    - name: Execute additional tasks
+      run: |
+        echo "Executing additional tasks every 58 minutes..."
+        # Здесь можно добавить дополнительные действия, если нужно.
