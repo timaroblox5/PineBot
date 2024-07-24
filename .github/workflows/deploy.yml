@@ -3,7 +3,6 @@ name: Deploy Discord Bot
 on:
   schedule:
     - cron: '*/358 * * * *'  # Run every 358 minutes
-  workflow_dispatch:  # Allows manual triggering if needed
 
 jobs:
   build:
