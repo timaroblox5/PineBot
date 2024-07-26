@@ -1,4 +1,4 @@
-const { Client, Collection, GatewayIntentBits } = require('discord.js'); // Импортируйте GatewayIntentBits
+const { Client, Collection, GatewayIntentBits, Integration } = require('discord.js'); // Импортируйте GatewayIntentBits
 const fs = require('fs');
 const mongoose = require('./src/database/mongoose');
 const config = require('./config.json');
@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000;
 
 // Создаем клиента
 const client = new Client({
-    intents: [GatewayIntentBits.All], // Включить все интенты
+    intents: [Integration], // Включить все интенты
 });
 discordModals(client);
 
