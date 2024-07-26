@@ -2,12 +2,12 @@ name: Deploy Discord Bot
 
 on:
   schedule:
-    - cron: '59 * * * *'  # Запуск каждые 59 минут (для второго job)
+    - cron: '10 * * * *'  # Запуск каждые 59 минут (для второго job)
 
 jobs:
   run_bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 60  # Общее время выполнения job
+    timeout-minutes: 11  # Общее время выполнения job
 
     steps:
     - name: Checkout code
@@ -26,7 +26,7 @@ jobs:
         echo "Starting bot..."
         node app.js &  # Запуск бота в фоновом режиме
         echo "Bot started with process ID $!"
-        sleep 3490  # Подождать 59 минут (3490 секунд)
+        sleep 600  # Подождать 1 минут (60 секунд)
         echo "Stopping bot..."
         kill $!  # Остановить бот
       env:
@@ -41,4 +41,4 @@ jobs:
     steps:
     - name: Execute additional tasks
       run: |
-        echo "Executing additional tasks every 59 minutes..."
+        echo "Executing additional tasks every 10 minutes..."
