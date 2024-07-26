@@ -53,12 +53,6 @@ client.on("interactionCreate", async (interaction) => {
     }
 });
 
-// Регистрация событий
-handler.registerEvents(client);
-
-// Регистрация команд при запуске бота
-handler.registerCommands(client);
-
 
 // Инициализация базы данных
 mongoose.init();
