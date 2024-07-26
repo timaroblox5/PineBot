@@ -42,4 +42,3 @@ jobs:
     - name: Execute additional tasks
       run: |
         echo "Executing additional tasks every 59 minutes..."
-        # Здесь можно добавить дополнительные действия, если нужно.
