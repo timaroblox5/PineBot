@@ -11,7 +11,7 @@ function getAllJsFiles(dir) {
         const filePath = path.join(dir, file);
         const stat = fs.statSync(filePath);
 
-        if (stat && stat.isDirectory()) {
+        if (stat && stat.isDirectory()) {   
             results = results.concat(getAllJsFiles(filePath));
         } else if (file.endsWith('.js')) {
             results.push(filePath);
