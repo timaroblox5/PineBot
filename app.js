@@ -18,7 +18,9 @@ const app = express();
 const port = process.env.PORT || 3000; // Укажите порт, если нужно
 
 // Создаем клиента
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({
+    intents: [GatewayIntentBits.All], // Включить все интенты
+});
 discordModals(client);
 
 client.commands = new Collection();
