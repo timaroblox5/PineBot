@@ -27,7 +27,7 @@ client.commands = new Collection();
 handler.registerEvents(client);
 
 // Регистрация команд при запуске бота
-handler.registerCommands(clientId, guildId, token);
+handler.registerCommands(config.CLIENTID, process.env.DISCORD_TOKEN);
 
 
 client.on('ready', async () => {
@@ -50,6 +50,13 @@ client.on("interactionCreate", async (interaction) => {
         });
     }
 });
+
+// Регистрация событий
+handler.registerEvents(client);
+
+// Регистрация команд при запуске бота
+handler.registerCommands(client);
+
 
 // Инициализация базы данных
 mongoose.init();
