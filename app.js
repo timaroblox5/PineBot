@@ -12,6 +12,7 @@ const discordModals = require('discord-modals');
 const express = require('express');
 const axios = require('axios'); // Убедитесь, что axios установлен
 const cheerio = require('cheerio'); // Убедитесь, что cheerio установлен
+const handler = require('./handler/index');
 
 const app = express();
 const port = process.env.PORT || 3000; // Укажите порт, если нужно
@@ -22,32 +23,12 @@ discordModals(client);
 
 client.commands = new Collection();
 
-// Загрузка команд
-const commandFiles = fs.readdirSync(path.join(__dirname, 'src/commands')).filter(file => file.endsWith('.js'));
+// Регистрация событий
+handler.registerEvents(client);
 
-for (const file of commandFiles) {
-    const command = require(`./src/commands/${file}`);
-    
-    // Проверка на структуру команды
-    if (!command.data || !command.data.name) {
-        console.error(`Команда в файле ${file} не имеет правильной структуры.`);
-        continue; // Пропустить этот файл
-    }
+// Регистрация команд при запуске бота
+handler.registerCommands(clientId, guildId, token);
 
-    client.commands.set(command.data.name, command);
-}
-
-// Загрузка событий
-const eventFiles = fs.readdirSync(path.join(__dirname, 'src/events')).filter(file => file.endsWith('.js'));
-
-for (const file of eventFiles) {
-    const event = require(`./src/events/${file}`);
-    if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args, client));
-    } else {
-        client.on(event.name, (...args) => event.execute(...args, client));
-    }
-}
 
 client.on('ready', async () => {
     client.user.setActivity("!help", { type: "WATCHING" });
