@@ -22,31 +22,6 @@ discordModals(client);
 
 client.commands = new Collection();
 
-// Обработка входящего вебхука
-app.use(express.json());
-
-app.post('/webhook', (req, res) => {
-    console.log('Received webhook:', req.body);
-    if (req.body.action === 'push') {
-        console.log('Received a push event! Restarting bot...');
-        // Логика для перезапуска бота, если нужно
-        // Можно реализовать это через process.exit() или использовать PM2
-    }
-    res.status(200).send('Webhook received');
-});
-
-// API для получения количества пользователей в гильдии
-app.get('/api/user-count', (req, res) => {
-    const guildId = '1264717953597833236'; // Укажите идентификатор вашего сервера
-    const guild = client.guilds.cache.get(guildId);
-    if (guild) {
-        const memberCount = guild.memberCount;
-        res.json({ totalUsers: memberCount });
-    } else {
-        res.status(404).json({ error: 'Гильдия не найдена' });
-    }
-});
-
 // Загрузка команд
 const commandFiles = fs.readdirSync(path.join(__dirname, 'src/commands')).filter(file => file.endsWith('.js'));
 
@@ -60,44 +35,6 @@ for (const file of commandFiles) {
     }
 
     client.commands.set(command.data.name, command);
-}
-
-const CHANNEL_ID = '1264719358563979325';
-const CHECK_INTERVAL = 300000; // 5 минут
-
-let lastContent = ''; // Переменная для хранения последнего контента
-
-client.once('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
-    setInterval(checkWebsite, CHECK_INTERVAL);
-
-    // Отправляем сообщение в канал
-    const channel = client.channels.cache.get(CHANNEL_ID);
-    if (channel) {
-        channel.send('Привет, мир! Это сообщение от бота.').catch(console.error);
-    } else {
-        console.log('Канал не найден');
-    }
-});
-
-async function checkWebsite() {
-    try {
-        const response = await axios.get('https://timaroblox5.github.io/PineBot/');
-        const $ = cheerio.load(response.data);
-        
-        // Предположим, что вы хотите проверить текст в определенном элементе
-        const newContent = $('#targetElementId').text(); // Замените на корректный селектор
-
-        if (newContent !== lastContent) {
-            lastContent = newContent;
-            const channel = client.channels.cache.get(CHANNEL_ID);
-            if (channel) {
-                channel.send('Содержимое сайта обновилось!').catch(console.error);
-            }
-        }
-    } catch (error) {
-        console.error('Ошибка проверки сайта:', error);
-    }
 }
 
 // Загрузка событий
