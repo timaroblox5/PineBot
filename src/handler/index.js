@@ -35,7 +35,7 @@ module.exports = {
         const commands = [];
         const commandFiles = getAllJsFiles(path.join(__dirname, '../commands'));
 
-        const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
+        const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN); // Не забудьте добавить инициализацию
 
         for (const filePath of commandFiles) {
             const command = require(filePath);

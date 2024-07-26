@@ -26,8 +26,8 @@ client.commands = new Collection();
 // Регистрация событий
 handler.registerEvents(client);
 
-// Регистрация команд при запуске бота
-handler.registerCommands(config.CLIENTID, process.env.DISCORD_TOKEN);
+// Регистрация текстовых команд
+handler.registerCommands(client);
 
 
 client.on('ready', async () => {

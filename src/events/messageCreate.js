@@ -46,7 +46,7 @@ module.exports = {
                     .setDescription('An error occurred while processing your message.')
                     .setTimestamp();
 
-                message.channel.send({ embeds: [embedError] }).catch(console.error);
+                await message.channel.send({ embeds: [embedError] }).catch(console.error);
             }
         }
     },
