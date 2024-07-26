@@ -12,7 +12,7 @@ const discordModals = require('discord-modals');
 const express = require('express');
 const axios = require('axios'); // Убедитесь, что axios установлен
 const cheerio = require('cheerio'); // Убедитесь, что cheerio установлен
-const handler = require('./handler/index');
+const handler = require('./src/handler/index');
 
 const app = express();
 const port = process.env.PORT || 3000; // Укажите порт, если нужно
