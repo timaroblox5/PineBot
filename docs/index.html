@@ -4,59 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PineBot - Авторизация</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 50px;
-        }
-        button {
-            background-color: #7289DA; /* Цвет Discord */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #5b6eae;
-        }
-    </style>
 </head>
 <body>
-    <h1>Авторизация в PineBot</h1>
-    <p>Нажмите кнопку ниже, чтобы войти с помощью Discord:</p>
-    <button id="authButton">Войти с помощью Discord</button>
+    <h1>Переход на авторизацию</h1>
+    <p>Если вы не были перенаправлены автоматически, нажмите <a id="authLink" href="#">здесь</a>.</p>
 
     <script>
-        const clientId = '1263856580970152020'; // Замените на ваш Client ID
-        const redirectUri = encodeURIComponent('http://127.0.0.1:5500/docs/@me.html'); // Замените на ваш URL
 
-        document.getElementById('authButton').onclick = () => {
-            const authUrl = `https://discord.com/oauth2/authorize?client_id=1263856580970152020&response_type=code&redirect_uri=http%3A%2F%2F127.0.0.1%3A5500%2Fdocs%2F%40me.html&scope=identify+email`;
-            window.location.href = authUrl;
-        };
-
-        // Проверка URL на наличие токена
-        const hash = window.location.hash;
-        if (hash) {
-            const params = new URLSearchParams(hash.slice(1));
-            const accessToken = params.get('access_token');
-            if (accessToken) {
-                fetch('https://discord.com/api/users/@me', {
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`
-                    }
-                }).then(response => response.json())
-                  .then(userData => {
-                      // Вывод информации о пользователе
-                      document.body.innerHTML = `<h1>Добро пожаловать, ${userData.username}!</h1><p>Email: ${userData.email}</p>`;
-                  }).catch(error => console.error('Ошибка:', error));
-            }
-        }
     </script>
+    <script src="./js/server.js"></script>
 </body>
 </html>
