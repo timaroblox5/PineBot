@@ -22,20 +22,24 @@ discordModals(client);
 
 client.commands = new Collection();
 
-// Загрузка команд
-const commandFiles = fs.readdirSync(path.join(__dirname, 'src/commands')).filter(file => file.endsWith('.js'));
+const commandFolders = fs.readdirSync(path.join(__dirname, 'src/commands'));
 
-for (const file of commandFiles) {
-    const command = require(`./src/commands/${file}`);
-    
-    // Проверка на структуру команды
-    if (!command.data || !command.data.name) {
-        console.error(`Команда в файле ${file} не имеет правильной структуры.`);
-        continue; // Пропустить этот файл
+for (const folder of commandFolders) {
+    const commandFiles = fs.readdirSync(path.join(__dirname, 'src/commands', folder)).filter(file => file.endsWith('.js'));
+
+    for (const file of commandFiles) {
+        const command = require(`./src/commands/${folder}/${file}`);
+        
+        // Проверка на структуру команды
+        if (!command.data || !command.data.name) {
+            console.error(`Команда в файле ${file} не имеет правильной структуры.`);
+            continue; // Пропустить этот файл
+        }
+
+        client.commands.set(command.data.name, command);
     }
-
-    client.commands.set(command.data.name, command);
 }
+
 
 // Загрузка событий
 const eventFiles = fs.readdirSync(path.join(__dirname, 'src/events')).filter(file => file.endsWith('.js'));

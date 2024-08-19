@@ -1,6 +1,6 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require('discord.js');
 const Levels = require('discord-xp');
-const config = require('../../config.json');
+const config = require('../../../config.json');
 let currentPage = 1;
 
 module.exports = {

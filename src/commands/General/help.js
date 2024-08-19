@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js');
-const config = require('../../config.json');
+const config = require('../../../config.json');
 
 module.exports = {
     data: {
@@ -18,11 +18,10 @@ module.exports = {
             const category = args.join(' ').toLowerCase();
 
             // Filter commands by the provided category
-            const commandsArray = Object.values(commands);
-            const categoryCommands = commandsArray.filter(cmd => cmd.data.category && cmd.data.category.toLowerCase() === category);
+            const categoryCommands = Array.from(commands.values()).filter(cmd => cmd.data.category && cmd.data.category.toLowerCase() === category);
 
-            if (categoryCommands.size > 0) {
-                embed.setTitle(`Commands in category: ${category}`)
+            if (categoryCommands.length > 0) {
+                embed.setTitle(`Commands in category: ${category.charAt(0).toUpperCase() + category.slice(1)}`)
                     .setDescription(categoryCommands.map(cmd => `\`${cmd.data.name}\`: ${cmd.data.description}`).join('\n'));
             } else {
                 embed.setTitle('Category not found')
@@ -30,8 +29,18 @@ module.exports = {
             }
         } else {
             // Display all commands if no category is provided
-            embed.setTitle('Available Commands')
-                .setDescription(commands.map(cmd => `\`${cmd.data.name}\`: ${cmd.data.description}`).join('\n'));
+            const allCommands = Array.from(commands.values());
+            const groupedCommands = allCommands.reduce((acc, cmd) => {
+                const category = cmd.data.category || 'Uncategorized';
+                if (!acc[category]) acc[category] = [];
+                acc[category].push(`\`${cmd.data.name}\`: ${cmd.data.description}`);
+                return acc;
+            }, {});
+
+            embed.setTitle('Available Commands');
+            Object.entries(groupedCommands).forEach(([category, cmds]) => {
+                embed.addField(category, cmds.join('\n'), false);
+            });
         }
 
         // Send the embed
